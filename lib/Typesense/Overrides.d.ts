@@ -1,5 +1,5 @@
-import ApiCall from './ApiCall';
-import { OverrideSchema } from './Override';
+import type ApiCall from './ApiCall';
+import type { OverrideSchema } from './Override';
 export interface OverrideCreateSchema {
     rule: {
         query: string;

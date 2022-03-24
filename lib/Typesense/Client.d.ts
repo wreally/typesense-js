@@ -1,4 +1,5 @@
-import Configuration, { ConfigurationOptions } from './Configuration';
+import type { ConfigurationOptions } from './Configuration';
+import Configuration from './Configuration';
 import ApiCall from './ApiCall';
 import Collections from './Collections';
 import Collection from './Collection';

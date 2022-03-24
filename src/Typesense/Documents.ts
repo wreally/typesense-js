@@ -1,6 +1,6 @@
 import type { ReadStream } from 'fs'
-import ApiCall from './ApiCall'
-import Configuration from './Configuration'
+import type ApiCall from './ApiCall'
+import type Configuration from './Configuration'
 import { ImportError } from './Errors'
 import { SearchOnlyDocuments } from './SearchOnlyDocuments'
 
@@ -8,6 +8,10 @@ import { SearchOnlyDocuments } from './SearchOnlyDocuments'
 export interface DeleteQuery {
   filter_by: string
   batch_size?: number
+}
+
+export interface TypesenseTypes {
+  a: DeleteQuery
 }
 
 export interface DeleteResponse {
@@ -18,6 +22,8 @@ interface ImportResponseSuccess {
   success: true
 }
 
+export type DocumentSchema = Record<string, any>
+
 export interface ImportResponseFail {
   success: false
   error: string
@@ -26,8 +32,6 @@ export interface ImportResponseFail {
 }
 
 export type ImportResponse = ImportResponseSuccess | ImportResponseFail
-
-export interface DocumentSchema extends Record<string, any> {}
 
 export interface SearchParams {
   // From https://typesense.org/docs/latest/api/documents.html#arguments
@@ -146,30 +150,29 @@ export interface SearchOptions {
 
 export default class Documents<T extends DocumentSchema = {}>
   extends SearchOnlyDocuments<T>
-  implements WriteableDocuments<T>
-{
-  constructor(collectionName: string, apiCall: ApiCall, configuration: Configuration) {
+  implements WriteableDocuments<T> {
+  constructor (collectionName: string, apiCall: ApiCall, configuration: Configuration) {
     super(collectionName, apiCall, configuration)
   }
 
-  async create(document: T, options: DocumentWriteParameters = {}): Promise<T> {
+  async create (document: T, options: DocumentWriteParameters = {}): Promise<T> {
     if (!document) throw new Error('No document provided')
     return this.apiCall.post<T>(this.endpointPath(), document, options)
   }
 
-  async upsert(document: T, options: DocumentWriteParameters = {}): Promise<T> {
+  async upsert (document: T, options: DocumentWriteParameters = {}): Promise<T> {
     if (!document) throw new Error('No document provided')
     return this.apiCall.post<T>(this.endpointPath(), document, Object.assign({}, options, { action: 'upsert' }))
   }
 
-  async update(document: T, options: DocumentWriteParameters = {}): Promise<T> {
+  async update (document: T, options: DocumentWriteParameters = {}): Promise<T> {
     if (!document) throw new Error('No document provided')
     return this.apiCall.post<T>(this.endpointPath(), document, Object.assign({}, options, { action: 'update' }))
   }
 
   async delete(idOrQuery: DeleteQuery): Promise<DeleteResponse>
   async delete(idOrQuery: string): Promise<T>
-  async delete(idOrQuery: string | DeleteQuery = {} as DeleteQuery): Promise<DeleteResponse | T> {
+  async delete (idOrQuery: string | DeleteQuery = {} as DeleteQuery): Promise<DeleteResponse | T> {
     if (typeof idOrQuery === 'string') {
       return this.apiCall.delete<T>(this.endpointPath(idOrQuery), idOrQuery)
     } else {
@@ -177,7 +180,7 @@ export default class Documents<T extends DocumentSchema = {}>
     }
   }
 
-  async createMany(documents: T[], options: DocumentWriteParameters = {}) {
+  async createMany (documents: T[], options: DocumentWriteParameters = {}) {
     this.configuration.logger.warn(
       'createMany is deprecated and will be removed in a future version. Use import instead, which now takes both an array of documents or a JSONL string of documents'
     )
@@ -192,7 +195,7 @@ export default class Documents<T extends DocumentSchema = {}>
    */
   async import(documents: string, options?: DocumentWriteParameters): Promise<string>
   async import(documents: T[], options?: DocumentWriteParameters): Promise<ImportResponse[]>
-  async import(documents: T[] | string, options: DocumentWriteParameters = {}): Promise<string | ImportResponse[]> {
+  async import (documents: T[] | string, options: DocumentWriteParameters = {}): Promise<string | ImportResponse[]> {
     let documentsInJSONLFormat
     if (Array.isArray(documents)) {
       try {
@@ -241,14 +244,14 @@ export default class Documents<T extends DocumentSchema = {}>
   /**
    * Returns a JSONL string for all the documents in this collection
    */
-  async export(options: DocumentsExportParameters = {}): Promise<string> {
+  async export (options: DocumentsExportParameters = {}): Promise<string> {
     return this.apiCall.get<string>(this.endpointPath('export'), options)
   }
 
   /**
    * Returns a NodeJS readable stream of JSONL for all the documents in this collection.
    */
-  async exportStream(options: DocumentsExportParameters = {}): Promise<ReadStream> {
+  async exportStream (options: DocumentsExportParameters = {}): Promise<ReadStream> {
     return this.apiCall.get<ReadStream>(this.endpointPath('export'), options, { responseType: 'stream' })
   }
 }

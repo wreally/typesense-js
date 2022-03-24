@@ -1,5 +1,5 @@
-import ApiCall from './ApiCall';
-import { DocumentSchema, DocumentWriteParameters } from './Documents';
+import type ApiCall from './ApiCall';
+import type { DocumentSchema, DocumentWriteParameters } from './Documents';
 export declare class Document<T extends DocumentSchema = {}> {
     private collectionName;
     private documentId;

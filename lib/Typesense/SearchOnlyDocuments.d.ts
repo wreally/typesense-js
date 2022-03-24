@@ -1,6 +1,6 @@
 import RequestWithCache from './RequestWithCache';
-import ApiCall from './ApiCall';
-import Configuration from './Configuration';
+import type ApiCall from './ApiCall';
+import type Configuration from './Configuration';
 import type { SearchableDocuments, SearchOptions, SearchParams, SearchResponse } from './Documents';
 export declare class SearchOnlyDocuments<T> implements SearchableDocuments<T> {
     protected collectionName: string;

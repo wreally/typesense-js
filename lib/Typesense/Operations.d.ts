@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall';
+import type ApiCall from './ApiCall';
 export default class Operations {
     private apiCall;
     constructor(apiCall: ApiCall);

@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall';
+import type ApiCall from './ApiCall';
 export interface MetricsResponse {
     system_cpu1_active_percentage: string;
     system_cpu2_active_percentage: string;

@@ -1,6 +1,8 @@
-import ApiCall from './ApiCall'
-import Collections, { CollectionCreateSchema } from './Collections'
-import Documents, { DocumentSchema } from './Documents'
+import type ApiCall from './ApiCall'
+import type { CollectionCreateSchema } from './Collections'
+import Collections from './Collections'
+import type { DocumentSchema } from './Documents'
+import Documents from './Documents'
 import { ObjectNotFound } from './Errors'
 import Overrides from './Overrides'
 import Override from './Override'
@@ -46,7 +48,7 @@ export default class Collection<T extends DocumentSchema = {}> {
   private readonly _synonyms: Synonyms
   private individualSynonyms: Record<string, Synonym> = {}
 
-  constructor(private readonly name: string, private readonly apiCall: ApiCall, private readonly configuration: any) {
+  constructor (private readonly name: string, private readonly apiCall: ApiCall, private readonly configuration: any) {
     this.name = name
     this.apiCall = apiCall
     this.configuration = configuration
@@ -56,15 +58,15 @@ export default class Collection<T extends DocumentSchema = {}> {
     this._synonyms = new Synonyms(this.name, this.apiCall)
   }
 
-  async retrieve(): Promise<CollectionSchema> {
+  async retrieve (): Promise<CollectionSchema> {
     return this.apiCall.get<CollectionSchema>(this.endpointPath())
   }
 
-  async delete(): Promise<CollectionSchema> {
+  async delete (): Promise<CollectionSchema> {
     return this.apiCall.delete<CollectionSchema>(this.endpointPath())
   }
 
-  async exists(): Promise<boolean> {
+  async exists (): Promise<boolean> {
     try {
       await this.retrieve()
       return true
@@ -76,7 +78,7 @@ export default class Collection<T extends DocumentSchema = {}> {
 
   documents(): Documents<T>
   documents(documentId: string): Document<T>
-  documents(documentId?: string): Document<T> | Documents<T> {
+  documents (documentId?: string): Document<T> | Documents<T> {
     if (!documentId) {
       return this._documents
     } else {
@@ -89,7 +91,7 @@ export default class Collection<T extends DocumentSchema = {}> {
 
   overrides(): Overrides
   overrides(overrideId: string): Override
-  overrides(overrideId?: string): Overrides | Override {
+  overrides (overrideId?: string): Overrides | Override {
     if (overrideId === undefined) {
       return this._overrides
     } else {
@@ -102,7 +104,7 @@ export default class Collection<T extends DocumentSchema = {}> {
 
   synonyms(): Synonyms
   synonyms(synonymId: string): Synonym
-  synonyms(synonymId?: string): Synonyms | Synonym {
+  synonyms (synonymId?: string): Synonyms | Synonym {
     if (synonymId === undefined) {
       return this._synonyms
     } else {
@@ -113,7 +115,7 @@ export default class Collection<T extends DocumentSchema = {}> {
     }
   }
 
-  private endpointPath(): string {
+  private endpointPath (): string {
     return `${Collections.RESOURCEPATH}/${this.name}`
   }
 }

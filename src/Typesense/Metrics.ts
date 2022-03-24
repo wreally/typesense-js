@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 
 const RESOURCEPATH = '/metrics.json'
 
@@ -24,9 +24,9 @@ export interface MetricsResponse {
 }
 
 export default class Metrics {
-  constructor(private apiCall: ApiCall) {}
+  constructor (private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<MetricsResponse> {
+  async retrieve (): Promise<MetricsResponse> {
     return this.apiCall.get(RESOURCEPATH)
   }
 }

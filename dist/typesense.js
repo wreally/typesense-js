@@ -876,62 +876,7 @@ Cancel.prototype.__CANCEL__ = true;
 
 module.exports = Cancel;
 
-},{}],28:[function(require,module,exports){
-'use strict';
-
-var utils = require('./../utils');
-
-// Headers whose duplicates are ignored by node
-// c.f. https://nodejs.org/api/http.html#http_message_headers
-var ignoreDuplicateOf = [
-  'age', 'authorization', 'content-length', 'content-type', 'etag',
-  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
-  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
-  'referer', 'retry-after', 'user-agent'
-];
-
-/**
- * Parse headers into an object
- *
- * ```
- * Date: Wed, 27 Aug 2014 08:58:49 GMT
- * Content-Type: application/json
- * Connection: keep-alive
- * Transfer-Encoding: chunked
- * ```
- *
- * @param {String} headers Headers needing to be parsed
- * @returns {Object} Headers parsed into an object
- */
-module.exports = function parseHeaders(headers) {
-  var parsed = {};
-  var key;
-  var val;
-  var i;
-
-  if (!headers) { return parsed; }
-
-  utils.forEach(headers.split('\n'), function parser(line) {
-    i = line.indexOf(':');
-    key = utils.trim(line.substr(0, i)).toLowerCase();
-    val = utils.trim(line.substr(i + 1));
-
-    if (key) {
-      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
-        return;
-      }
-      if (key === 'set-cookie') {
-        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
-      } else {
-        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
-      }
-    }
-  });
-
-  return parsed;
-};
-
-},{"./../utils":31}],23:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 'use strict';
 
 var utils = require('./../utils');
@@ -985,6 +930,61 @@ module.exports = (
       };
     })()
 );
+
+},{"./../utils":31}],28:[function(require,module,exports){
+'use strict';
+
+var utils = require('./../utils');
+
+// Headers whose duplicates are ignored by node
+// c.f. https://nodejs.org/api/http.html#http_message_headers
+var ignoreDuplicateOf = [
+  'age', 'authorization', 'content-length', 'content-type', 'etag',
+  'expires', 'from', 'host', 'if-modified-since', 'if-unmodified-since',
+  'last-modified', 'location', 'max-forwards', 'proxy-authorization',
+  'referer', 'retry-after', 'user-agent'
+];
+
+/**
+ * Parse headers into an object
+ *
+ * ```
+ * Date: Wed, 27 Aug 2014 08:58:49 GMT
+ * Content-Type: application/json
+ * Connection: keep-alive
+ * Transfer-Encoding: chunked
+ * ```
+ *
+ * @param {String} headers Headers needing to be parsed
+ * @returns {Object} Headers parsed into an object
+ */
+module.exports = function parseHeaders(headers) {
+  var parsed = {};
+  var key;
+  var val;
+  var i;
+
+  if (!headers) { return parsed; }
+
+  utils.forEach(headers.split('\n'), function parser(line) {
+    i = line.indexOf(':');
+    key = utils.trim(line.substr(0, i)).toLowerCase();
+    val = utils.trim(line.substr(i + 1));
+
+    if (key) {
+      if (parsed[key] && ignoreDuplicateOf.indexOf(key) >= 0) {
+        return;
+      }
+      if (key === 'set-cookie') {
+        parsed[key] = (parsed[key] ? parsed[key] : []).concat([val]);
+      } else {
+        parsed[key] = parsed[key] ? parsed[key] + ', ' + val : val;
+      }
+    }
+  });
+
+  return parsed;
+};
 
 },{"./../utils":31}],26:[function(require,module,exports){
 'use strict';
@@ -1145,6 +1145,11 @@ module.exports = function isCancel(value) {
   return !!(value && value.__CANCEL__);
 };
 
+},{}],19:[function(require,module,exports){
+module.exports = {
+  "version": "0.26.0"
+};
+
 },{}],29:[function(require,module,exports){
 'use strict';
 
@@ -1172,11 +1177,6 @@ module.exports = function spread(callback) {
   return function wrap(arr) {
     return callback.apply(null, arr);
   };
-};
-
-},{}],19:[function(require,module,exports){
-module.exports = {
-  "version": "0.26.0"
 };
 
 },{}],15:[function(require,module,exports){
@@ -1795,23 +1795,7 @@ module.exports = function dispatchRequest(config) {
   });
 };
 
-},{"../cancel/Cancel":6,"../cancel/isCancel":8,"../defaults":18,"./../utils":31,"./transformData":17}],22:[function(require,module,exports){
-'use strict';
-
-/**
- * Creates a new URL by combining the specified URLs
- *
- * @param {string} baseURL The base URL
- * @param {string} relativeURL The relative URL
- * @returns {string} The combined URL
- */
-module.exports = function combineURLs(baseURL, relativeURL) {
-  return relativeURL
-    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
-    : baseURL;
-};
-
-},{}],24:[function(require,module,exports){
+},{"../cancel/Cancel":6,"../cancel/isCancel":8,"../defaults":18,"./../utils":31,"./transformData":17}],24:[function(require,module,exports){
 'use strict';
 
 /**
@@ -1825,6 +1809,22 @@ module.exports = function isAbsoluteURL(url) {
   // RFC 3986 defines scheme name as a sequence of characters beginning with a letter and followed
   // by any combination of letters, digits, plus, period, or hyphen.
   return /^([a-z][a-z\d+\-.]*:)?\/\//i.test(url);
+};
+
+},{}],22:[function(require,module,exports){
+'use strict';
+
+/**
+ * Creates a new URL by combining the specified URLs
+ *
+ * @param {string} baseURL The base URL
+ * @param {string} relativeURL The relative URL
+ * @returns {string} The combined URL
+ */
+module.exports = function combineURLs(baseURL, relativeURL) {
+  return relativeURL
+    ? baseURL.replace(/\/+$/, '') + '/' + relativeURL.replace(/^\/+/, '')
+    : baseURL;
 };
 
 },{}],14:[function(require,module,exports){
@@ -4461,6 +4461,12 @@ var __importStar = void 0 && (void 0).__importStar || function (mod) {
   return result;
 };
 
+var __exportStar = void 0 && (void 0).__exportStar || function (m, exports) {
+  for (var p in m) {
+    if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
+  }
+};
+
 var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
     "default": mod
@@ -4483,14 +4489,362 @@ exports.SearchClient = SearchClient_1["default"];
 var Errors = __importStar(require("./Typesense/Errors"));
 
 exports.Errors = Errors;
+
+__exportStar(require("./Typesense/Documents"), exports);
+
+__exportStar(require("./Typesense/Collection"), exports);
+
+__exportStar(require("./Typesense/Collections"), exports);
+
+__exportStar(require("./Typesense/Configuration"), exports);
+
+__exportStar(require("./Typesense/MultiSearch"), exports);
+
+__exportStar(require("./Typesense/Synonym"), exports);
+
+__exportStar(require("./Typesense/Synonym"), exports);
+
 exports["default"] = {
   Client: Client_1["default"],
   SearchClient: SearchClient_1["default"],
   Errors: Errors
 };
 
-},{"./Typesense/Client":42,"./Typesense/Errors":59,"./Typesense/SearchClient":69}],59:[function(require,module,exports){
+},{"./Typesense/Client":42,"./Typesense/Collection":43,"./Typesense/Collections":44,"./Typesense/Configuration":45,"./Typesense/Documents":48,"./Typesense/Errors":59,"./Typesense/MultiSearch":64,"./Typesense/SearchClient":69,"./Typesense/Synonym":72}],44:[function(require,module,exports){
 "use strict";
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var RESOURCEPATH = '/collections';
+
+var Collections =
+/** @class */
+function () {
+  function Collections(apiCall) {
+    this.apiCall = apiCall;
+  }
+
+  Collections.prototype.create = function (schema) {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.post(RESOURCEPATH, schema)];
+      });
+    });
+  };
+
+  Collections.prototype.retrieve = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(RESOURCEPATH)];
+      });
+    });
+  };
+
+  Object.defineProperty(Collections, "RESOURCEPATH", {
+    get: function get() {
+      return RESOURCEPATH;
+    },
+    enumerable: false,
+    configurable: true
+  });
+  return Collections;
+}();
+
+exports["default"] = Collections;
+
+},{}],72:[function(require,module,exports){
+"use strict";
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
 
 var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
   return mod && mod.__esModule ? mod : {
@@ -4501,49 +4855,419 @@ var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.ImportError = exports.TypesenseError = exports.ServerError = exports.RequestUnauthorized = exports.RequestMalformed = exports.ObjectUnprocessable = exports.ObjectNotFound = exports.ObjectAlreadyExists = exports.MissingConfigurationError = exports.HTTPError = void 0;
 
-var HTTPError_1 = __importDefault(require("./HTTPError"));
+var Collections_1 = __importDefault(require("./Collections"));
 
-exports.HTTPError = HTTPError_1["default"];
+var Synonyms_1 = __importDefault(require("./Synonyms"));
 
-var MissingConfigurationError_1 = __importDefault(require("./MissingConfigurationError"));
+var Synonym =
+/** @class */
+function () {
+  function Synonym(collectionName, synonymId, apiCall) {
+    this.collectionName = collectionName;
+    this.synonymId = synonymId;
+    this.apiCall = apiCall;
+  }
 
-exports.MissingConfigurationError = MissingConfigurationError_1["default"];
+  Synonym.prototype.retrieve = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(this.endpointPath())];
+      });
+    });
+  };
 
-var ObjectAlreadyExists_1 = __importDefault(require("./ObjectAlreadyExists"));
+  Synonym.prototype["delete"] = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall["delete"](this.endpointPath())];
+      });
+    });
+  };
 
-exports.ObjectAlreadyExists = ObjectAlreadyExists_1["default"];
+  Synonym.prototype.endpointPath = function () {
+    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.collectionName).concat(Synonyms_1["default"].RESOURCEPATH, "/").concat(this.synonymId);
+  };
 
-var ObjectNotFound_1 = __importDefault(require("./ObjectNotFound"));
+  return Synonym;
+}();
 
-exports.ObjectNotFound = ObjectNotFound_1["default"];
+exports["default"] = Synonym;
 
-var ObjectUnprocessable_1 = __importDefault(require("./ObjectUnprocessable"));
+},{"./Collections":44,"./Synonyms":73}],64:[function(require,module,exports){
+"use strict";
 
-exports.ObjectUnprocessable = ObjectUnprocessable_1["default"];
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
 
-var RequestMalformed_1 = __importDefault(require("./RequestMalformed"));
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
 
-exports.RequestMalformed = RequestMalformed_1["default"];
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
 
-var RequestUnauthorized_1 = __importDefault(require("./RequestUnauthorized"));
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
 
-exports.RequestUnauthorized = RequestUnauthorized_1["default"];
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
 
-var ServerError_1 = __importDefault(require("./ServerError"));
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
 
-exports.ServerError = ServerError_1["default"];
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
 
-var ImportError_1 = __importDefault(require("./ImportError"));
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
 
-exports.ImportError = ImportError_1["default"];
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
 
-var TypesenseError_1 = __importDefault(require("./TypesenseError"));
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
 
-exports.TypesenseError = TypesenseError_1["default"];
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
 
-},{"./HTTPError":49,"./ImportError":50,"./MissingConfigurationError":51,"./ObjectAlreadyExists":52,"./ObjectNotFound":53,"./ObjectUnprocessable":54,"./RequestMalformed":55,"./RequestUnauthorized":56,"./ServerError":57,"./TypesenseError":58}],69:[function(require,module,exports){
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var RequestWithCache_1 = __importDefault(require("./RequestWithCache"));
+
+var RESOURCEPATH = '/multi_search';
+
+var MultiSearch =
+/** @class */
+function () {
+  function MultiSearch(apiCall, configuration, useTextContentType) {
+    if (useTextContentType === void 0) {
+      useTextContentType = false;
+    }
+
+    this.apiCall = apiCall;
+    this.configuration = configuration;
+    this.useTextContentType = useTextContentType;
+    this.requestWithCache = new RequestWithCache_1["default"]();
+  }
+
+  MultiSearch.prototype.perform = function (searchRequests, commonParams, _a) {
+    if (commonParams === void 0) {
+      commonParams = {};
+    }
+
+    var _b = _a === void 0 ? {} : _a,
+        _c = _b.cacheSearchResultsForSeconds,
+        cacheSearchResultsForSeconds = _c === void 0 ? this.configuration.cacheSearchResultsForSeconds : _c;
+
+    return __awaiter(this, void 0, void 0, function () {
+      var additionalHeaders, additionalQueryParams, queryParams;
+      return __generator(this, function (_d) {
+        additionalHeaders = {};
+
+        if (this.useTextContentType) {
+          additionalHeaders['content-type'] = 'text/plain';
+        }
+
+        additionalQueryParams = {};
+
+        if (this.configuration.useServerSideSearchCache === true) {
+          additionalQueryParams['use_cache'] = true;
+        }
+
+        queryParams = Object.assign({}, commonParams, additionalQueryParams);
+        return [2
+        /*return*/
+        , this.requestWithCache.perform(this.apiCall, this.apiCall.post, [RESOURCEPATH, searchRequests, queryParams, additionalHeaders], {
+          cacheResponseForSeconds: cacheSearchResultsForSeconds
+        })];
+      });
+    });
+  };
+
+  return MultiSearch;
+}();
+
+exports["default"] = MultiSearch;
+
+},{"./RequestWithCache":68}],45:[function(require,module,exports){
+"use strict";
+
+var __createBinding = void 0 && (void 0).__createBinding || (Object.create ? function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  var desc = Object.getOwnPropertyDescriptor(m, k);
+
+  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+    desc = {
+      enumerable: true,
+      get: function get() {
+        return m[k];
+      }
+    };
+  }
+
+  Object.defineProperty(o, k2, desc);
+} : function (o, m, k, k2) {
+  if (k2 === undefined) k2 = k;
+  o[k2] = m[k];
+});
+
+var __setModuleDefault = void 0 && (void 0).__setModuleDefault || (Object.create ? function (o, v) {
+  Object.defineProperty(o, "default", {
+    enumerable: true,
+    value: v
+  });
+} : function (o, v) {
+  o["default"] = v;
+});
+
+var __importStar = void 0 && (void 0).__importStar || function (mod) {
+  if (mod && mod.__esModule) return mod;
+  var result = {};
+  if (mod != null) for (var k in mod) {
+    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+  }
+
+  __setModuleDefault(result, mod);
+
+  return result;
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var logger = __importStar(require("loglevel"));
+
+var Errors_1 = require("./Errors");
+
+var Configuration =
+/** @class */
+function () {
+  function Configuration(options) {
+    var _this = this;
+
+    this.nodes = options.nodes || [];
+    this.nodes = this.nodes.map(function (node) {
+      return _this.setDefaultPathInNode(node);
+    }).map(function (node) {
+      return _this.setDefaultPortInNode(node);
+    });
+    this.nearestNode = options.nearestNode || null;
+    this.nearestNode = this.setDefaultPathInNode(this.nearestNode);
+    this.nearestNode = this.setDefaultPortInNode(this.nearestNode);
+    this.connectionTimeoutSeconds = options.connectionTimeoutSeconds || options.timeoutSeconds || 10;
+    this.healthcheckIntervalSeconds = options.healthcheckIntervalSeconds || 15;
+    this.numRetries = options.numRetries || this.nodes.length + (this.nearestNode == null ? 0 : 1) || 3;
+    this.retryIntervalSeconds = options.retryIntervalSeconds || 0.1;
+    this.apiKey = options.apiKey;
+    this.sendApiKeyAsQueryParam = options.sendApiKeyAsQueryParam || false;
+    this.cacheSearchResultsForSeconds = options.cacheSearchResultsForSeconds || 0; // Disable client-side cache by default
+
+    this.useServerSideSearchCache = options.useServerSideSearchCache || false;
+    this.logger = options.logger || logger;
+    this.logLevel = options.logLevel || 'warn';
+    this.logger.setLevel(this.logLevel);
+    this.additionalHeaders = options.additionalHeaders;
+    this.showDeprecationWarnings(options);
+    this.validate();
+  }
+
+  Configuration.prototype.validate = function () {
+    if (this.nodes == null || this.nodes.length === 0 || this.validateNodes()) {
+      throw new Errors_1.MissingConfigurationError('Ensure that nodes[].protocol, nodes[].host and nodes[].port are set');
+    }
+
+    if (this.nearestNode != null && this.isNodeMissingAnyParameters(this.nearestNode)) {
+      throw new Errors_1.MissingConfigurationError('Ensure that nearestNodes.protocol, nearestNodes.host and nearestNodes.port are set');
+    }
+
+    if (this.apiKey == null) {
+      throw new Errors_1.MissingConfigurationError('Ensure that apiKey is set');
+    }
+
+    return true;
+  };
+
+  Configuration.prototype.validateNodes = function () {
+    var _this = this;
+
+    return this.nodes.some(function (node) {
+      return _this.isNodeMissingAnyParameters(node);
+    });
+  };
+
+  Configuration.prototype.isNodeMissingAnyParameters = function (node) {
+    return !['protocol', 'host', 'port', 'path'].every(function (key) {
+      return node.hasOwnProperty(key);
+    }) && node.url == null;
+  };
+
+  Configuration.prototype.setDefaultPathInNode = function (node) {
+    if (node != null && !node.hasOwnProperty('path')) {
+      node.path = '';
+    }
+
+    return node;
+  };
+
+  Configuration.prototype.setDefaultPortInNode = function (node) {
+    if (node != null && !node.hasOwnProperty('port') && node.hasOwnProperty('protocol')) {
+      switch (node.protocol) {
+        case 'https':
+          node.port = 443;
+          break;
+
+        case 'http':
+          node.port = 80;
+          break;
+      }
+    }
+
+    return node;
+  };
+
+  Configuration.prototype.showDeprecationWarnings = function (options) {
+    if (options.timeoutSeconds) {
+      this.logger.warn('Deprecation warning: timeoutSeconds is now renamed to connectionTimeoutSeconds');
+    }
+
+    if (options.masterNode) {
+      this.logger.warn('Deprecation warning: masterNode is now consolidated to nodes, starting with Typesense Server v0.12');
+    }
+
+    if (options.readReplicaNodes) {
+      this.logger.warn('Deprecation warning: readReplicaNodes is now consolidated to nodes, starting with Typesense Server v0.12');
+    }
+  };
+
+  return Configuration;
+}();
+
+exports["default"] = Configuration;
+
+},{"./Errors":59,"loglevel":36}],69:[function(require,module,exports){
 "use strict";
 
 var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
@@ -4597,7 +5321,743 @@ function () {
 
 exports["default"] = SearchClient;
 
-},{"./ApiCall":41,"./Configuration":45,"./MultiSearch":64,"./SearchOnlyCollection":70}],42:[function(require,module,exports){
+},{"./ApiCall":41,"./Configuration":45,"./MultiSearch":64,"./SearchOnlyCollection":70}],48:[function(require,module,exports){
+"use strict";
+
+var __extends = void 0 && (void 0).__extends || function () {
+  var _extendStatics = function extendStatics(d, b) {
+    _extendStatics = Object.setPrototypeOf || {
+      __proto__: []
+    } instanceof Array && function (d, b) {
+      d.__proto__ = b;
+    } || function (d, b) {
+      for (var p in b) {
+        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
+      }
+    };
+
+    return _extendStatics(d, b);
+  };
+
+  return function (d, b) {
+    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+
+    _extendStatics(d, b);
+
+    function __() {
+      this.constructor = d;
+    }
+
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+  };
+}();
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Errors_1 = require("./Errors");
+
+var SearchOnlyDocuments_1 = require("./SearchOnlyDocuments");
+
+var Documents =
+/** @class */
+function (_super) {
+  __extends(Documents, _super);
+
+  function Documents(collectionName, apiCall, configuration) {
+    return _super.call(this, collectionName, apiCall, configuration) || this;
+  }
+
+  Documents.prototype.create = function (document, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        if (!document) throw new Error('No document provided');
+        return [2
+        /*return*/
+        , this.apiCall.post(this.endpointPath(), document, options)];
+      });
+    });
+  };
+
+  Documents.prototype.upsert = function (document, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        if (!document) throw new Error('No document provided');
+        return [2
+        /*return*/
+        , this.apiCall.post(this.endpointPath(), document, Object.assign({}, options, {
+          action: 'upsert'
+        }))];
+      });
+    });
+  };
+
+  Documents.prototype.update = function (document, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        if (!document) throw new Error('No document provided');
+        return [2
+        /*return*/
+        , this.apiCall.post(this.endpointPath(), document, Object.assign({}, options, {
+          action: 'update'
+        }))];
+      });
+    });
+  };
+
+  Documents.prototype["delete"] = function (idOrQuery) {
+    if (idOrQuery === void 0) {
+      idOrQuery = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        if (typeof idOrQuery === 'string') {
+          return [2
+          /*return*/
+          , this.apiCall["delete"](this.endpointPath(idOrQuery), idOrQuery)];
+        } else {
+          return [2
+          /*return*/
+          , this.apiCall["delete"](this.endpointPath(), idOrQuery)];
+        }
+
+        return [2
+        /*return*/
+        ];
+      });
+    });
+  };
+
+  Documents.prototype.createMany = function (documents, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        this.configuration.logger.warn('createMany is deprecated and will be removed in a future version. Use import instead, which now takes both an array of documents or a JSONL string of documents');
+        return [2
+        /*return*/
+        , this["import"](documents, options)];
+      });
+    });
+  };
+
+  Documents.prototype["import"] = function (documents, options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      var documentsInJSONLFormat, resultsInJSONLFormat, resultsInJSONFormat, failedItems;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            if (Array.isArray(documents)) {
+              try {
+                documentsInJSONLFormat = documents.map(function (document) {
+                  return JSON.stringify(document);
+                }).join('\n');
+              } catch (error) {
+                // if rangeerror, throw custom error message
+                if (RangeError instanceof error && (error === null || error === void 0 ? void 0 : error.includes('Too many properties to enumerate'))) {
+                  throw new Error("".concat(error, "\n          It looks like you have reached a Node.js limit that restricts the number of keys in an Object: https://stackoverflow.com/questions/9282869/are-there-limits-to-the-number-of-properties-in-a-javascript-object\n\n          Please try reducing the number of keys in your document, or using CURL to import your data.\n          "));
+                } // else, throw the non-range error anyways
+
+
+                throw new Error(error);
+              }
+            } else {
+              documentsInJSONLFormat = documents;
+            }
+
+            return [4
+            /*yield*/
+            , this.apiCall.performRequest('post', this.endpointPath('import'), {
+              queryParameters: options,
+              bodyParameters: documentsInJSONLFormat,
+              additionalHeaders: {
+                'Content-Type': 'text/plain'
+              }
+            })];
+
+          case 1:
+            resultsInJSONLFormat = _a.sent();
+
+            if (Array.isArray(documents)) {
+              resultsInJSONFormat = resultsInJSONLFormat.split('\n').map(function (r) {
+                return JSON.parse(r);
+              });
+              failedItems = resultsInJSONFormat.filter(function (r) {
+                return r.success === false;
+              });
+
+              if (failedItems.length > 0) {
+                throw new Errors_1.ImportError("".concat(resultsInJSONFormat.length - failedItems.length, " documents imported successfully, ").concat(failedItems.length, " documents failed during import. Use `error.importResults` from the raised exception to get a detailed error reason for each document."), resultsInJSONFormat);
+              } else {
+                return [2
+                /*return*/
+                , resultsInJSONFormat];
+              }
+            } else {
+              return [2
+              /*return*/
+              , resultsInJSONLFormat];
+            }
+
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+  /**
+   * Returns a JSONL string for all the documents in this collection
+   */
+
+
+  Documents.prototype["export"] = function (options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(this.endpointPath('export'), options)];
+      });
+    });
+  };
+  /**
+   * Returns a NodeJS readable stream of JSONL for all the documents in this collection.
+   */
+
+
+  Documents.prototype.exportStream = function (options) {
+    if (options === void 0) {
+      options = {};
+    }
+
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(this.endpointPath('export'), options, {
+          responseType: 'stream'
+        })];
+      });
+    });
+  };
+
+  return Documents;
+}(SearchOnlyDocuments_1.SearchOnlyDocuments);
+
+exports["default"] = Documents;
+
+},{"./Errors":59,"./SearchOnlyDocuments":71}],43:[function(require,module,exports){
+"use strict";
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Collections_1 = __importDefault(require("./Collections"));
+
+var Documents_1 = __importDefault(require("./Documents"));
+
+var Errors_1 = require("./Errors");
+
+var Overrides_1 = __importDefault(require("./Overrides"));
+
+var Override_1 = __importDefault(require("./Override"));
+
+var Synonyms_1 = __importDefault(require("./Synonyms"));
+
+var Synonym_1 = __importDefault(require("./Synonym"));
+
+var Document_1 = require("./Document");
+
+var Collection =
+/** @class */
+function () {
+  function Collection(name, apiCall, configuration) {
+    this.name = name;
+    this.apiCall = apiCall;
+    this.configuration = configuration;
+    this.individualDocuments = {};
+    this.individualOverrides = {};
+    this.individualSynonyms = {};
+    this.name = name;
+    this.apiCall = apiCall;
+    this.configuration = configuration;
+    this._documents = new Documents_1["default"](this.name, this.apiCall, this.configuration);
+    this._overrides = new Overrides_1["default"](this.name, this.apiCall);
+    this._synonyms = new Synonyms_1["default"](this.name, this.apiCall);
+  }
+
+  Collection.prototype.retrieve = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(this.endpointPath())];
+      });
+    });
+  };
+
+  Collection.prototype["delete"] = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall["delete"](this.endpointPath())];
+      });
+    });
+  };
+
+  Collection.prototype.exists = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      var e_1;
+      return __generator(this, function (_a) {
+        switch (_a.label) {
+          case 0:
+            _a.trys.push([0, 2,, 3]);
+
+            return [4
+            /*yield*/
+            , this.retrieve()];
+
+          case 1:
+            _a.sent();
+
+            return [2
+            /*return*/
+            , true];
+
+          case 2:
+            e_1 = _a.sent();
+            if (e_1 instanceof Errors_1.ObjectNotFound) return [2
+            /*return*/
+            , false];
+            throw e_1;
+
+          case 3:
+            return [2
+            /*return*/
+            ];
+        }
+      });
+    });
+  };
+
+  Collection.prototype.documents = function (documentId) {
+    if (!documentId) {
+      return this._documents;
+    } else {
+      if (this.individualDocuments[documentId] === undefined) {
+        this.individualDocuments[documentId] = new Document_1.Document(this.name, documentId, this.apiCall);
+      }
+
+      return this.individualDocuments[documentId];
+    }
+  };
+
+  Collection.prototype.overrides = function (overrideId) {
+    if (overrideId === undefined) {
+      return this._overrides;
+    } else {
+      if (this.individualOverrides[overrideId] === undefined) {
+        this.individualOverrides[overrideId] = new Override_1["default"](this.name, overrideId, this.apiCall);
+      }
+
+      return this.individualOverrides[overrideId];
+    }
+  };
+
+  Collection.prototype.synonyms = function (synonymId) {
+    if (synonymId === undefined) {
+      return this._synonyms;
+    } else {
+      if (this.individualSynonyms[synonymId] === undefined) {
+        this.individualSynonyms[synonymId] = new Synonym_1["default"](this.name, synonymId, this.apiCall);
+      }
+
+      return this.individualSynonyms[synonymId];
+    }
+  };
+
+  Collection.prototype.endpointPath = function () {
+    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.name);
+  };
+
+  return Collection;
+}();
+
+exports["default"] = Collection;
+
+},{"./Collections":44,"./Document":47,"./Documents":48,"./Errors":59,"./Override":66,"./Overrides":67,"./Synonym":72,"./Synonyms":73}],59:[function(require,module,exports){
+"use strict";
+
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.ImportError = exports.TypesenseError = exports.ServerError = exports.RequestUnauthorized = exports.RequestMalformed = exports.ObjectUnprocessable = exports.ObjectNotFound = exports.ObjectAlreadyExists = exports.MissingConfigurationError = exports.HTTPError = void 0;
+
+var HTTPError_1 = __importDefault(require("./HTTPError"));
+
+exports.HTTPError = HTTPError_1["default"];
+
+var MissingConfigurationError_1 = __importDefault(require("./MissingConfigurationError"));
+
+exports.MissingConfigurationError = MissingConfigurationError_1["default"];
+
+var ObjectAlreadyExists_1 = __importDefault(require("./ObjectAlreadyExists"));
+
+exports.ObjectAlreadyExists = ObjectAlreadyExists_1["default"];
+
+var ObjectNotFound_1 = __importDefault(require("./ObjectNotFound"));
+
+exports.ObjectNotFound = ObjectNotFound_1["default"];
+
+var ObjectUnprocessable_1 = __importDefault(require("./ObjectUnprocessable"));
+
+exports.ObjectUnprocessable = ObjectUnprocessable_1["default"];
+
+var RequestMalformed_1 = __importDefault(require("./RequestMalformed"));
+
+exports.RequestMalformed = RequestMalformed_1["default"];
+
+var RequestUnauthorized_1 = __importDefault(require("./RequestUnauthorized"));
+
+exports.RequestUnauthorized = RequestUnauthorized_1["default"];
+
+var ServerError_1 = __importDefault(require("./ServerError"));
+
+exports.ServerError = ServerError_1["default"];
+
+var ImportError_1 = __importDefault(require("./ImportError"));
+
+exports.ImportError = ImportError_1["default"];
+
+var TypesenseError_1 = __importDefault(require("./TypesenseError"));
+
+exports.TypesenseError = TypesenseError_1["default"];
+
+},{"./HTTPError":49,"./ImportError":50,"./MissingConfigurationError":51,"./ObjectAlreadyExists":52,"./ObjectNotFound":53,"./ObjectUnprocessable":54,"./RequestMalformed":55,"./RequestUnauthorized":56,"./ServerError":57,"./TypesenseError":58}],42:[function(require,module,exports){
 "use strict";
 
 var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
@@ -5785,196 +7245,6 @@ function (_super) {
 
 exports["default"] = TypesenseError;
 
-},{}],44:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var RESOURCEPATH = '/collections';
-
-var Collections =
-/** @class */
-function () {
-  function Collections(apiCall) {
-    this.apiCall = apiCall;
-  }
-
-  Collections.prototype.create = function (schema) {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.post(RESOURCEPATH, schema)];
-      });
-    });
-  };
-
-  Collections.prototype.retrieve = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(RESOURCEPATH)];
-      });
-    });
-  };
-
-  Object.defineProperty(Collections, "RESOURCEPATH", {
-    get: function get() {
-      return RESOURCEPATH;
-    },
-    enumerable: false,
-    configurable: true
-  });
-  return Collections;
-}();
-
-exports["default"] = Collections;
-
 },{}],46:[function(require,module,exports){
 "use strict";
 
@@ -6148,179 +7418,6 @@ function () {
 
 exports["default"] = Debug;
 
-},{}],60:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-var RESOURCEPATH = '/health';
-
-var Health =
-/** @class */
-function () {
-  function Health(apiCall) {
-    this.apiCall = apiCall;
-  }
-
-  Health.prototype.retrieve = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(RESOURCEPATH)];
-      });
-    });
-  };
-
-  return Health;
-}();
-
-exports["default"] = Health;
-
 },{}],63:[function(require,module,exports){
 "use strict";
 
@@ -6493,6 +7590,179 @@ function () {
 }();
 
 exports["default"] = Metrics;
+
+},{}],60:[function(require,module,exports){
+"use strict";
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+var RESOURCEPATH = '/health';
+
+var Health =
+/** @class */
+function () {
+  function Health(apiCall) {
+    this.apiCall = apiCall;
+  }
+
+  Health.prototype.retrieve = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(RESOURCEPATH)];
+      });
+    });
+  };
+
+  return Health;
+}();
+
+exports["default"] = Health;
 
 },{}],65:[function(require,module,exports){
 "use strict";
@@ -6866,376 +8136,7 @@ function () {
 
 exports["default"] = Key;
 
-},{"./Keys":62}],64:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var RequestWithCache_1 = __importDefault(require("./RequestWithCache"));
-
-var RESOURCEPATH = '/multi_search';
-
-var MultiSearch =
-/** @class */
-function () {
-  function MultiSearch(apiCall, configuration, useTextContentType) {
-    if (useTextContentType === void 0) {
-      useTextContentType = false;
-    }
-
-    this.apiCall = apiCall;
-    this.configuration = configuration;
-    this.useTextContentType = useTextContentType;
-    this.requestWithCache = new RequestWithCache_1["default"]();
-  }
-
-  MultiSearch.prototype.perform = function (searchRequests, commonParams, _a) {
-    if (commonParams === void 0) {
-      commonParams = {};
-    }
-
-    var _b = _a === void 0 ? {} : _a,
-        _c = _b.cacheSearchResultsForSeconds,
-        cacheSearchResultsForSeconds = _c === void 0 ? this.configuration.cacheSearchResultsForSeconds : _c;
-
-    return __awaiter(this, void 0, void 0, function () {
-      var additionalHeaders, additionalQueryParams, queryParams;
-      return __generator(this, function (_d) {
-        additionalHeaders = {};
-
-        if (this.useTextContentType) {
-          additionalHeaders['content-type'] = 'text/plain';
-        }
-
-        additionalQueryParams = {};
-
-        if (this.configuration.useServerSideSearchCache === true) {
-          additionalQueryParams['use_cache'] = true;
-        }
-
-        queryParams = Object.assign({}, commonParams, additionalQueryParams);
-        return [2
-        /*return*/
-        , this.requestWithCache.perform(this.apiCall, this.apiCall.post, [RESOURCEPATH, searchRequests, queryParams, additionalHeaders], {
-          cacheResponseForSeconds: cacheSearchResultsForSeconds
-        })];
-      });
-    });
-  };
-
-  return MultiSearch;
-}();
-
-exports["default"] = MultiSearch;
-
-},{"./RequestWithCache":68}],45:[function(require,module,exports){
-"use strict";
-
-var __createBinding = void 0 && (void 0).__createBinding || (Object.create ? function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  var desc = Object.getOwnPropertyDescriptor(m, k);
-
-  if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-    desc = {
-      enumerable: true,
-      get: function get() {
-        return m[k];
-      }
-    };
-  }
-
-  Object.defineProperty(o, k2, desc);
-} : function (o, m, k, k2) {
-  if (k2 === undefined) k2 = k;
-  o[k2] = m[k];
-});
-
-var __setModuleDefault = void 0 && (void 0).__setModuleDefault || (Object.create ? function (o, v) {
-  Object.defineProperty(o, "default", {
-    enumerable: true,
-    value: v
-  });
-} : function (o, v) {
-  o["default"] = v;
-});
-
-var __importStar = void 0 && (void 0).__importStar || function (mod) {
-  if (mod && mod.__esModule) return mod;
-  var result = {};
-  if (mod != null) for (var k in mod) {
-    if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-  }
-
-  __setModuleDefault(result, mod);
-
-  return result;
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var logger = __importStar(require("loglevel"));
-
-var Errors_1 = require("./Errors");
-
-var Configuration =
-/** @class */
-function () {
-  function Configuration(options) {
-    var _this = this;
-
-    this.nodes = options.nodes || [];
-    this.nodes = this.nodes.map(function (node) {
-      return _this.setDefaultPathInNode(node);
-    }).map(function (node) {
-      return _this.setDefaultPortInNode(node);
-    });
-    this.nearestNode = options.nearestNode || null;
-    this.nearestNode = this.setDefaultPathInNode(this.nearestNode);
-    this.nearestNode = this.setDefaultPortInNode(this.nearestNode);
-    this.connectionTimeoutSeconds = options.connectionTimeoutSeconds || options.timeoutSeconds || 10;
-    this.healthcheckIntervalSeconds = options.healthcheckIntervalSeconds || 15;
-    this.numRetries = options.numRetries || this.nodes.length + (this.nearestNode == null ? 0 : 1) || 3;
-    this.retryIntervalSeconds = options.retryIntervalSeconds || 0.1;
-    this.apiKey = options.apiKey;
-    this.sendApiKeyAsQueryParam = options.sendApiKeyAsQueryParam || false;
-    this.cacheSearchResultsForSeconds = options.cacheSearchResultsForSeconds || 0; // Disable client-side cache by default
-
-    this.useServerSideSearchCache = options.useServerSideSearchCache || false;
-    this.logger = options.logger || logger;
-    this.logLevel = options.logLevel || 'warn';
-    this.logger.setLevel(this.logLevel);
-    this.additionalHeaders = options.additionalHeaders;
-    this.showDeprecationWarnings(options);
-    this.validate();
-  }
-
-  Configuration.prototype.validate = function () {
-    if (this.nodes == null || this.nodes.length === 0 || this.validateNodes()) {
-      throw new Errors_1.MissingConfigurationError('Ensure that nodes[].protocol, nodes[].host and nodes[].port are set');
-    }
-
-    if (this.nearestNode != null && this.isNodeMissingAnyParameters(this.nearestNode)) {
-      throw new Errors_1.MissingConfigurationError('Ensure that nearestNodes.protocol, nearestNodes.host and nearestNodes.port are set');
-    }
-
-    if (this.apiKey == null) {
-      throw new Errors_1.MissingConfigurationError('Ensure that apiKey is set');
-    }
-
-    return true;
-  };
-
-  Configuration.prototype.validateNodes = function () {
-    var _this = this;
-
-    return this.nodes.some(function (node) {
-      return _this.isNodeMissingAnyParameters(node);
-    });
-  };
-
-  Configuration.prototype.isNodeMissingAnyParameters = function (node) {
-    return !['protocol', 'host', 'port', 'path'].every(function (key) {
-      return node.hasOwnProperty(key);
-    }) && node.url == null;
-  };
-
-  Configuration.prototype.setDefaultPathInNode = function (node) {
-    if (node != null && !node.hasOwnProperty('path')) {
-      node.path = '';
-    }
-
-    return node;
-  };
-
-  Configuration.prototype.setDefaultPortInNode = function (node) {
-    if (node != null && !node.hasOwnProperty('port') && node.hasOwnProperty('protocol')) {
-      switch (node.protocol) {
-        case 'https':
-          node.port = 443;
-          break;
-
-        case 'http':
-          node.port = 80;
-          break;
-      }
-    }
-
-    return node;
-  };
-
-  Configuration.prototype.showDeprecationWarnings = function (options) {
-    if (options.timeoutSeconds) {
-      this.logger.warn('Deprecation warning: timeoutSeconds is now renamed to connectionTimeoutSeconds');
-    }
-
-    if (options.masterNode) {
-      this.logger.warn('Deprecation warning: masterNode is now consolidated to nodes, starting with Typesense Server v0.12');
-    }
-
-    if (options.readReplicaNodes) {
-      this.logger.warn('Deprecation warning: readReplicaNodes is now consolidated to nodes, starting with Typesense Server v0.12');
-    }
-  };
-
-  return Configuration;
-}();
-
-exports["default"] = Configuration;
-
-},{"./Errors":59,"loglevel":36}],62:[function(require,module,exports){
+},{"./Keys":62}],62:[function(require,module,exports){
 (function (Buffer){(function (){
 "use strict";
 
@@ -7442,495 +8343,7 @@ exports["default"] = Keys;
 
 }).call(this)}).call(this,require("buffer").Buffer)
 
-},{"buffer":34,"crypto":33}],43:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var Collections_1 = __importDefault(require("./Collections"));
-
-var Documents_1 = __importDefault(require("./Documents"));
-
-var Errors_1 = require("./Errors");
-
-var Overrides_1 = __importDefault(require("./Overrides"));
-
-var Override_1 = __importDefault(require("./Override"));
-
-var Synonyms_1 = __importDefault(require("./Synonyms"));
-
-var Synonym_1 = __importDefault(require("./Synonym"));
-
-var Document_1 = require("./Document");
-
-var Collection =
-/** @class */
-function () {
-  function Collection(name, apiCall, configuration) {
-    this.name = name;
-    this.apiCall = apiCall;
-    this.configuration = configuration;
-    this.individualDocuments = {};
-    this.individualOverrides = {};
-    this.individualSynonyms = {};
-    this.name = name;
-    this.apiCall = apiCall;
-    this.configuration = configuration;
-    this._documents = new Documents_1["default"](this.name, this.apiCall, this.configuration);
-    this._overrides = new Overrides_1["default"](this.name, this.apiCall);
-    this._synonyms = new Synonyms_1["default"](this.name, this.apiCall);
-  }
-
-  Collection.prototype.retrieve = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(this.endpointPath())];
-      });
-    });
-  };
-
-  Collection.prototype["delete"] = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall["delete"](this.endpointPath())];
-      });
-    });
-  };
-
-  Collection.prototype.exists = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      var e_1;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            _a.trys.push([0, 2,, 3]);
-
-            return [4
-            /*yield*/
-            , this.retrieve()];
-
-          case 1:
-            _a.sent();
-
-            return [2
-            /*return*/
-            , true];
-
-          case 2:
-            e_1 = _a.sent();
-            if (e_1 instanceof Errors_1.ObjectNotFound) return [2
-            /*return*/
-            , false];
-            throw e_1;
-
-          case 3:
-            return [2
-            /*return*/
-            ];
-        }
-      });
-    });
-  };
-
-  Collection.prototype.documents = function (documentId) {
-    if (!documentId) {
-      return this._documents;
-    } else {
-      if (this.individualDocuments[documentId] === undefined) {
-        this.individualDocuments[documentId] = new Document_1.Document(this.name, documentId, this.apiCall);
-      }
-
-      return this.individualDocuments[documentId];
-    }
-  };
-
-  Collection.prototype.overrides = function (overrideId) {
-    if (overrideId === undefined) {
-      return this._overrides;
-    } else {
-      if (this.individualOverrides[overrideId] === undefined) {
-        this.individualOverrides[overrideId] = new Override_1["default"](this.name, overrideId, this.apiCall);
-      }
-
-      return this.individualOverrides[overrideId];
-    }
-  };
-
-  Collection.prototype.synonyms = function (synonymId) {
-    if (synonymId === undefined) {
-      return this._synonyms;
-    } else {
-      if (this.individualSynonyms[synonymId] === undefined) {
-        this.individualSynonyms[synonymId] = new Synonym_1["default"](this.name, synonymId, this.apiCall);
-      }
-
-      return this.individualSynonyms[synonymId];
-    }
-  };
-
-  Collection.prototype.endpointPath = function () {
-    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.name);
-  };
-
-  return Collection;
-}();
-
-exports["default"] = Collection;
-
-},{"./Collections":44,"./Document":47,"./Documents":48,"./Errors":59,"./Override":66,"./Overrides":67,"./Synonym":72,"./Synonyms":73}],66:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var Collections_1 = __importDefault(require("./Collections"));
-
-var Overrides_1 = __importDefault(require("./Overrides"));
-
-var Override =
-/** @class */
-function () {
-  function Override(collectionName, overrideId, apiCall) {
-    this.collectionName = collectionName;
-    this.overrideId = overrideId;
-    this.apiCall = apiCall;
-  }
-
-  Override.prototype.retrieve = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(this.endpointPath())];
-      });
-    });
-  };
-
-  Override.prototype["delete"] = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall["delete"](this.endpointPath())];
-      });
-    });
-  };
-
-  Override.prototype.endpointPath = function () {
-    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.collectionName).concat(Overrides_1["default"].RESOURCEPATH, "/").concat(this.overrideId);
-  };
-
-  return Override;
-}();
-
-exports["default"] = Override;
-
-},{"./Collections":44,"./Overrides":67}],67:[function(require,module,exports){
+},{"buffer":34,"crypto":33}],67:[function(require,module,exports){
 "use strict";
 
 var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
@@ -8134,205 +8547,7 @@ function () {
 
 exports["default"] = Overrides;
 
-},{"./Collections":44}],72:[function(require,module,exports){
-"use strict";
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
-  return mod && mod.__esModule ? mod : {
-    "default": mod
-  };
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var Collections_1 = __importDefault(require("./Collections"));
-
-var Synonyms_1 = __importDefault(require("./Synonyms"));
-
-var Synonym =
-/** @class */
-function () {
-  function Synonym(collectionName, synonymId, apiCall) {
-    this.collectionName = collectionName;
-    this.synonymId = synonymId;
-    this.apiCall = apiCall;
-  }
-
-  Synonym.prototype.retrieve = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(this.endpointPath())];
-      });
-    });
-  };
-
-  Synonym.prototype["delete"] = function () {
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall["delete"](this.endpointPath())];
-      });
-    });
-  };
-
-  Synonym.prototype.endpointPath = function () {
-    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.collectionName).concat(Synonyms_1["default"].RESOURCEPATH, "/").concat(this.synonymId);
-  };
-
-  return Synonym;
-}();
-
-exports["default"] = Synonym;
-
-},{"./Collections":44,"./Synonyms":73}],73:[function(require,module,exports){
+},{"./Collections":44}],73:[function(require,module,exports){
 "use strict";
 
 var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
@@ -8536,7 +8751,205 @@ function () {
 
 exports["default"] = Synonyms;
 
-},{"./Collections":44}],47:[function(require,module,exports){
+},{"./Collections":44}],66:[function(require,module,exports){
+"use strict";
+
+var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
+  function adopt(value) {
+    return value instanceof P ? value : new P(function (resolve) {
+      resolve(value);
+    });
+  }
+
+  return new (P || (P = Promise))(function (resolve, reject) {
+    function fulfilled(value) {
+      try {
+        step(generator.next(value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function rejected(value) {
+      try {
+        step(generator["throw"](value));
+      } catch (e) {
+        reject(e);
+      }
+    }
+
+    function step(result) {
+      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
+    }
+
+    step((generator = generator.apply(thisArg, _arguments || [])).next());
+  });
+};
+
+var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
+  var _ = {
+    label: 0,
+    sent: function sent() {
+      if (t[0] & 1) throw t[1];
+      return t[1];
+    },
+    trys: [],
+    ops: []
+  },
+      f,
+      y,
+      t,
+      g;
+  return g = {
+    next: verb(0),
+    "throw": verb(1),
+    "return": verb(2)
+  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
+    return this;
+  }), g;
+
+  function verb(n) {
+    return function (v) {
+      return step([n, v]);
+    };
+  }
+
+  function step(op) {
+    if (f) throw new TypeError("Generator is already executing.");
+
+    while (_) {
+      try {
+        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
+        if (y = 0, t) op = [op[0] & 2, t.value];
+
+        switch (op[0]) {
+          case 0:
+          case 1:
+            t = op;
+            break;
+
+          case 4:
+            _.label++;
+            return {
+              value: op[1],
+              done: false
+            };
+
+          case 5:
+            _.label++;
+            y = op[1];
+            op = [0];
+            continue;
+
+          case 7:
+            op = _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+
+          default:
+            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
+              _ = 0;
+              continue;
+            }
+
+            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
+              _.label = op[1];
+              break;
+            }
+
+            if (op[0] === 6 && _.label < t[1]) {
+              _.label = t[1];
+              t = op;
+              break;
+            }
+
+            if (t && _.label < t[2]) {
+              _.label = t[2];
+
+              _.ops.push(op);
+
+              break;
+            }
+
+            if (t[2]) _.ops.pop();
+
+            _.trys.pop();
+
+            continue;
+        }
+
+        op = body.call(thisArg, _);
+      } catch (e) {
+        op = [6, e];
+        y = 0;
+      } finally {
+        f = t = 0;
+      }
+    }
+
+    if (op[0] & 5) throw op[1];
+    return {
+      value: op[0] ? op[1] : void 0,
+      done: true
+    };
+  }
+};
+
+var __importDefault = void 0 && (void 0).__importDefault || function (mod) {
+  return mod && mod.__esModule ? mod : {
+    "default": mod
+  };
+};
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var Collections_1 = __importDefault(require("./Collections"));
+
+var Overrides_1 = __importDefault(require("./Overrides"));
+
+var Override =
+/** @class */
+function () {
+  function Override(collectionName, overrideId, apiCall) {
+    this.collectionName = collectionName;
+    this.overrideId = overrideId;
+    this.apiCall = apiCall;
+  }
+
+  Override.prototype.retrieve = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall.get(this.endpointPath())];
+      });
+    });
+  };
+
+  Override.prototype["delete"] = function () {
+    return __awaiter(this, void 0, void 0, function () {
+      return __generator(this, function (_a) {
+        return [2
+        /*return*/
+        , this.apiCall["delete"](this.endpointPath())];
+      });
+    });
+  };
+
+  Override.prototype.endpointPath = function () {
+    return "".concat(Collections_1["default"].RESOURCEPATH, "/").concat(this.collectionName).concat(Overrides_1["default"].RESOURCEPATH, "/").concat(this.overrideId);
+  };
+
+  return Override;
+}();
+
+exports["default"] = Override;
+
+},{"./Collections":44,"./Overrides":67}],47:[function(require,module,exports){
 "use strict";
 
 var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
@@ -8749,399 +9162,7 @@ function () {
 
 exports.Document = Document;
 
-},{"./Collections":44,"./Documents":48}],48:[function(require,module,exports){
-"use strict";
-
-var __extends = void 0 && (void 0).__extends || function () {
-  var _extendStatics = function extendStatics(d, b) {
-    _extendStatics = Object.setPrototypeOf || {
-      __proto__: []
-    } instanceof Array && function (d, b) {
-      d.__proto__ = b;
-    } || function (d, b) {
-      for (var p in b) {
-        if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p];
-      }
-    };
-
-    return _extendStatics(d, b);
-  };
-
-  return function (d, b) {
-    if (typeof b !== "function" && b !== null) throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
-
-    _extendStatics(d, b);
-
-    function __() {
-      this.constructor = d;
-    }
-
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-  };
-}();
-
-var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {
-  function adopt(value) {
-    return value instanceof P ? value : new P(function (resolve) {
-      resolve(value);
-    });
-  }
-
-  return new (P || (P = Promise))(function (resolve, reject) {
-    function fulfilled(value) {
-      try {
-        step(generator.next(value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function rejected(value) {
-      try {
-        step(generator["throw"](value));
-      } catch (e) {
-        reject(e);
-      }
-    }
-
-    function step(result) {
-      result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected);
-    }
-
-    step((generator = generator.apply(thisArg, _arguments || [])).next());
-  });
-};
-
-var __generator = void 0 && (void 0).__generator || function (thisArg, body) {
-  var _ = {
-    label: 0,
-    sent: function sent() {
-      if (t[0] & 1) throw t[1];
-      return t[1];
-    },
-    trys: [],
-    ops: []
-  },
-      f,
-      y,
-      t,
-      g;
-  return g = {
-    next: verb(0),
-    "throw": verb(1),
-    "return": verb(2)
-  }, typeof Symbol === "function" && (g[Symbol.iterator] = function () {
-    return this;
-  }), g;
-
-  function verb(n) {
-    return function (v) {
-      return step([n, v]);
-    };
-  }
-
-  function step(op) {
-    if (f) throw new TypeError("Generator is already executing.");
-
-    while (_) {
-      try {
-        if (f = 1, y && (t = op[0] & 2 ? y["return"] : op[0] ? y["throw"] || ((t = y["return"]) && t.call(y), 0) : y.next) && !(t = t.call(y, op[1])).done) return t;
-        if (y = 0, t) op = [op[0] & 2, t.value];
-
-        switch (op[0]) {
-          case 0:
-          case 1:
-            t = op;
-            break;
-
-          case 4:
-            _.label++;
-            return {
-              value: op[1],
-              done: false
-            };
-
-          case 5:
-            _.label++;
-            y = op[1];
-            op = [0];
-            continue;
-
-          case 7:
-            op = _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-
-          default:
-            if (!(t = _.trys, t = t.length > 0 && t[t.length - 1]) && (op[0] === 6 || op[0] === 2)) {
-              _ = 0;
-              continue;
-            }
-
-            if (op[0] === 3 && (!t || op[1] > t[0] && op[1] < t[3])) {
-              _.label = op[1];
-              break;
-            }
-
-            if (op[0] === 6 && _.label < t[1]) {
-              _.label = t[1];
-              t = op;
-              break;
-            }
-
-            if (t && _.label < t[2]) {
-              _.label = t[2];
-
-              _.ops.push(op);
-
-              break;
-            }
-
-            if (t[2]) _.ops.pop();
-
-            _.trys.pop();
-
-            continue;
-        }
-
-        op = body.call(thisArg, _);
-      } catch (e) {
-        op = [6, e];
-        y = 0;
-      } finally {
-        f = t = 0;
-      }
-    }
-
-    if (op[0] & 5) throw op[1];
-    return {
-      value: op[0] ? op[1] : void 0,
-      done: true
-    };
-  }
-};
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var Errors_1 = require("./Errors");
-
-var SearchOnlyDocuments_1 = require("./SearchOnlyDocuments");
-
-var Documents =
-/** @class */
-function (_super) {
-  __extends(Documents, _super);
-
-  function Documents(collectionName, apiCall, configuration) {
-    return _super.call(this, collectionName, apiCall, configuration) || this;
-  }
-
-  Documents.prototype.create = function (document, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        if (!document) throw new Error('No document provided');
-        return [2
-        /*return*/
-        , this.apiCall.post(this.endpointPath(), document, options)];
-      });
-    });
-  };
-
-  Documents.prototype.upsert = function (document, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        if (!document) throw new Error('No document provided');
-        return [2
-        /*return*/
-        , this.apiCall.post(this.endpointPath(), document, Object.assign({}, options, {
-          action: 'upsert'
-        }))];
-      });
-    });
-  };
-
-  Documents.prototype.update = function (document, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        if (!document) throw new Error('No document provided');
-        return [2
-        /*return*/
-        , this.apiCall.post(this.endpointPath(), document, Object.assign({}, options, {
-          action: 'update'
-        }))];
-      });
-    });
-  };
-
-  Documents.prototype["delete"] = function (idOrQuery) {
-    if (idOrQuery === void 0) {
-      idOrQuery = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        if (typeof idOrQuery === 'string') {
-          return [2
-          /*return*/
-          , this.apiCall["delete"](this.endpointPath(idOrQuery), idOrQuery)];
-        } else {
-          return [2
-          /*return*/
-          , this.apiCall["delete"](this.endpointPath(), idOrQuery)];
-        }
-
-        return [2
-        /*return*/
-        ];
-      });
-    });
-  };
-
-  Documents.prototype.createMany = function (documents, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        this.configuration.logger.warn('createMany is deprecated and will be removed in a future version. Use import instead, which now takes both an array of documents or a JSONL string of documents');
-        return [2
-        /*return*/
-        , this["import"](documents, options)];
-      });
-    });
-  };
-
-  Documents.prototype["import"] = function (documents, options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      var documentsInJSONLFormat, resultsInJSONLFormat, resultsInJSONFormat, failedItems;
-      return __generator(this, function (_a) {
-        switch (_a.label) {
-          case 0:
-            if (Array.isArray(documents)) {
-              try {
-                documentsInJSONLFormat = documents.map(function (document) {
-                  return JSON.stringify(document);
-                }).join('\n');
-              } catch (error) {
-                // if rangeerror, throw custom error message
-                if (RangeError instanceof error && (error === null || error === void 0 ? void 0 : error.includes('Too many properties to enumerate'))) {
-                  throw new Error("".concat(error, "\n          It looks like you have reached a Node.js limit that restricts the number of keys in an Object: https://stackoverflow.com/questions/9282869/are-there-limits-to-the-number-of-properties-in-a-javascript-object\n\n          Please try reducing the number of keys in your document, or using CURL to import your data.\n          "));
-                } // else, throw the non-range error anyways
-
-
-                throw new Error(error);
-              }
-            } else {
-              documentsInJSONLFormat = documents;
-            }
-
-            return [4
-            /*yield*/
-            , this.apiCall.performRequest('post', this.endpointPath('import'), {
-              queryParameters: options,
-              bodyParameters: documentsInJSONLFormat,
-              additionalHeaders: {
-                'Content-Type': 'text/plain'
-              }
-            })];
-
-          case 1:
-            resultsInJSONLFormat = _a.sent();
-
-            if (Array.isArray(documents)) {
-              resultsInJSONFormat = resultsInJSONLFormat.split('\n').map(function (r) {
-                return JSON.parse(r);
-              });
-              failedItems = resultsInJSONFormat.filter(function (r) {
-                return r.success === false;
-              });
-
-              if (failedItems.length > 0) {
-                throw new Errors_1.ImportError("".concat(resultsInJSONFormat.length - failedItems.length, " documents imported successfully, ").concat(failedItems.length, " documents failed during import. Use `error.importResults` from the raised exception to get a detailed error reason for each document."), resultsInJSONFormat);
-              } else {
-                return [2
-                /*return*/
-                , resultsInJSONFormat];
-              }
-            } else {
-              return [2
-              /*return*/
-              , resultsInJSONLFormat];
-            }
-
-            return [2
-            /*return*/
-            ];
-        }
-      });
-    });
-  };
-  /**
-   * Returns a JSONL string for all the documents in this collection
-   */
-
-
-  Documents.prototype["export"] = function (options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(this.endpointPath('export'), options)];
-      });
-    });
-  };
-  /**
-   * Returns a NodeJS readable stream of JSONL for all the documents in this collection.
-   */
-
-
-  Documents.prototype.exportStream = function (options) {
-    if (options === void 0) {
-      options = {};
-    }
-
-    return __awaiter(this, void 0, void 0, function () {
-      return __generator(this, function (_a) {
-        return [2
-        /*return*/
-        , this.apiCall.get(this.endpointPath('export'), options, {
-          responseType: 'stream'
-        })];
-      });
-    });
-  };
-
-  return Documents;
-}(SearchOnlyDocuments_1.SearchOnlyDocuments);
-
-exports["default"] = Documents;
-
-},{"./Errors":59,"./SearchOnlyDocuments":71}],71:[function(require,module,exports){
+},{"./Collections":44,"./Documents":48}],71:[function(require,module,exports){
 "use strict";
 
 var __awaiter = void 0 && (void 0).__awaiter || function (thisArg, _arguments, P, generator) {

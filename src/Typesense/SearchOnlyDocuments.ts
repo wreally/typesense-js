@@ -1,6 +1,6 @@
 import RequestWithCache from './RequestWithCache'
-import ApiCall from './ApiCall'
-import Configuration from './Configuration'
+import type ApiCall from './ApiCall'
+import type Configuration from './Configuration'
 import Collections from './Collections'
 import type { SearchableDocuments, SearchOptions, SearchParams, SearchResponse } from './Documents'
 
@@ -9,16 +9,16 @@ const RESOURCEPATH = '/documents'
 export class SearchOnlyDocuments<T> implements SearchableDocuments<T> {
   protected requestWithCache: RequestWithCache = new RequestWithCache()
 
-  constructor(protected collectionName: string, protected apiCall: ApiCall, protected configuration: Configuration) {}
+  constructor (protected collectionName: string, protected apiCall: ApiCall, protected configuration: Configuration) {}
 
-  async search(
+  async search (
     searchParameters: SearchParams,
     {
       cacheSearchResultsForSeconds = this.configuration.cacheSearchResultsForSeconds,
       abortSignal = null
     }: SearchOptions = {}
   ): Promise<SearchResponse<T>> {
-    let additionalQueryParams = {}
+    const additionalQueryParams = {}
     if (this.configuration.useServerSideSearchCache === true) {
       additionalQueryParams['use_cache'] = true
     }
@@ -34,13 +34,13 @@ export class SearchOnlyDocuments<T> implements SearchableDocuments<T> {
     )
   }
 
-  protected endpointPath(operation?: string) {
+  protected endpointPath (operation?: string) {
     return `${Collections.RESOURCEPATH}/${this.collectionName}${RESOURCEPATH}${
       operation === undefined ? '' : '/' + operation
     }`
   }
 
-  static get RESOURCEPATH() {
+  static get RESOURCEPATH () {
     return RESOURCEPATH
   }
 }

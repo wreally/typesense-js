@@ -1,6 +1,7 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 import Collections from './Collections'
-import Overrides, { OverrideCreateSchema } from './Overrides'
+import type { OverrideCreateSchema } from './Overrides'
+import Overrides from './Overrides'
 
 export interface OverrideSchema extends OverrideCreateSchema {
   id: string
@@ -11,17 +12,17 @@ export interface OverrideDeleteSchema {
 }
 
 export default class Override {
-  constructor(private collectionName: string, private overrideId: string, private apiCall: ApiCall) {}
+  constructor (private collectionName: string, private overrideId: string, private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<OverrideSchema> {
+  async retrieve (): Promise<OverrideSchema> {
     return this.apiCall.get<OverrideSchema>(this.endpointPath())
   }
 
-  async delete(): Promise<OverrideDeleteSchema> {
+  async delete (): Promise<OverrideDeleteSchema> {
     return this.apiCall.delete<OverrideDeleteSchema>(this.endpointPath())
   }
 
-  private endpointPath(): string {
+  private endpointPath (): string {
     return `${Collections.RESOURCEPATH}/${this.collectionName}${Overrides.RESOURCEPATH}/${this.overrideId}`
   }
 }

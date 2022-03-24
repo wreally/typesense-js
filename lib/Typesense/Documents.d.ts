@@ -1,11 +1,14 @@
 /// <reference types="node" />
 import type { ReadStream } from 'fs';
-import ApiCall from './ApiCall';
-import Configuration from './Configuration';
+import type ApiCall from './ApiCall';
+import type Configuration from './Configuration';
 import { SearchOnlyDocuments } from './SearchOnlyDocuments';
 export interface DeleteQuery {
     filter_by: string;
     batch_size?: number;
+}
+export interface TypesenseTypes {
+    a: DeleteQuery;
 }
 export interface DeleteResponse {
     num_deleted: number;
@@ -13,6 +16,7 @@ export interface DeleteResponse {
 interface ImportResponseSuccess {
     success: true;
 }
+export declare type DocumentSchema = Record<string, any>;
 export interface ImportResponseFail {
     success: false;
     error: string;
@@ -20,8 +24,6 @@ export interface ImportResponseFail {
     code: number;
 }
 export declare type ImportResponse = ImportResponseSuccess | ImportResponseFail;
-export interface DocumentSchema extends Record<string, any> {
-}
 export interface SearchParams {
     q: string;
     query_by: string;

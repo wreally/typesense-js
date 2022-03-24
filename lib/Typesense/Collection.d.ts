@@ -1,6 +1,7 @@
-import ApiCall from './ApiCall';
-import { CollectionCreateSchema } from './Collections';
-import Documents, { DocumentSchema } from './Documents';
+import type ApiCall from './ApiCall';
+import type { CollectionCreateSchema } from './Collections';
+import type { DocumentSchema } from './Documents';
+import Documents from './Documents';
 import Overrides from './Overrides';
 import Override from './Override';
 import Synonyms from './Synonyms';

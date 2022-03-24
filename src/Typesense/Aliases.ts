@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 
 const RESOURCEPATH = '/aliases'
 
@@ -15,21 +15,21 @@ export interface CollectionAliasesResponseSchema {
 }
 
 export default class Aliases {
-  constructor(private apiCall: ApiCall) {}
+  constructor (private apiCall: ApiCall) {}
 
-  async upsert(name: string, mapping: CollectionAliasCreateSchema): Promise<CollectionAliasSchema> {
+  async upsert (name: string, mapping: CollectionAliasCreateSchema): Promise<CollectionAliasSchema> {
     return this.apiCall.put<CollectionAliasSchema>(this.endpointPath(name), mapping)
   }
 
-  async retrieve(): Promise<CollectionAliasesResponseSchema> {
+  async retrieve (): Promise<CollectionAliasesResponseSchema> {
     return this.apiCall.get<CollectionAliasesResponseSchema>(RESOURCEPATH)
   }
 
-  private endpointPath(aliasName): string {
+  private endpointPath (aliasName): string {
     return `${Aliases.RESOURCEPATH}/${aliasName}`
   }
 
-  static get RESOURCEPATH(): string {
+  static get RESOURCEPATH (): string {
     return RESOURCEPATH
   }
 }

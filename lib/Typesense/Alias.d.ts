@@ -1,5 +1,5 @@
-import { CollectionAliasSchema } from './Aliases';
-import ApiCall from './ApiCall';
+import type { CollectionAliasSchema } from './Aliases';
+import type ApiCall from './ApiCall';
 export default class Alias {
     private name;
     private apiCall;

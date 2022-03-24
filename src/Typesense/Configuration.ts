@@ -34,7 +34,7 @@ export interface ConfigurationOptions {
   additionalHeaders?: Record<string, string>
 
   logLevel?: logger.LogLevelDesc
-  logger?: any //todo
+  logger?: any // todo
 }
 
 export default class Configuration {
@@ -52,7 +52,7 @@ export default class Configuration {
   readonly logLevel: any
   readonly additionalHeaders: Record<string, string>
 
-  constructor(options: ConfigurationOptions) {
+  constructor (options: ConfigurationOptions) {
     this.nodes = options.nodes || []
     this.nodes = this.nodes
       .map((node) => this.setDefaultPathInNode(node))
@@ -82,7 +82,7 @@ export default class Configuration {
     this.validate()
   }
 
-  validate(): boolean {
+  validate (): boolean {
     if (this.nodes == null || this.nodes.length === 0 || this.validateNodes()) {
       throw new MissingConfigurationError('Ensure that nodes[].protocol, nodes[].host and nodes[].port are set')
     }
@@ -100,13 +100,13 @@ export default class Configuration {
     return true
   }
 
-  private validateNodes(): boolean {
+  private validateNodes (): boolean {
     return this.nodes.some((node) => {
       return this.isNodeMissingAnyParameters(node)
     })
   }
 
-  private isNodeMissingAnyParameters(node: NodeConfiguration): boolean {
+  private isNodeMissingAnyParameters (node: NodeConfiguration): boolean {
     return (
       !['protocol', 'host', 'port', 'path'].every((key) => {
         return node.hasOwnProperty(key)
@@ -114,14 +114,14 @@ export default class Configuration {
     )
   }
 
-  private setDefaultPathInNode(node: NodeConfiguration): NodeConfiguration {
+  private setDefaultPathInNode (node: NodeConfiguration): NodeConfiguration {
     if (node != null && !node.hasOwnProperty('path')) {
       node.path = ''
     }
     return node
   }
 
-  private setDefaultPortInNode(node: NodeConfiguration): NodeConfiguration {
+  private setDefaultPortInNode (node: NodeConfiguration): NodeConfiguration {
     if (node != null && !node.hasOwnProperty('port') && node.hasOwnProperty('protocol')) {
       switch (node.protocol) {
         case 'https':
@@ -135,7 +135,7 @@ export default class Configuration {
     return node
   }
 
-  private showDeprecationWarnings(options: ConfigurationOptions): void {
+  private showDeprecationWarnings (options: ConfigurationOptions): void {
     if (options.timeoutSeconds) {
       this.logger.warn('Deprecation warning: timeoutSeconds is now renamed to connectionTimeoutSeconds')
     }

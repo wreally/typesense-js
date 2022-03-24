@@ -1,6 +1,6 @@
-import ApiCall from './ApiCall';
-import Configuration from './Configuration';
-import { DocumentSchema, SearchParams, SearchResponse } from './Documents';
+import type ApiCall from './ApiCall';
+import type Configuration from './Configuration';
+import type { DocumentSchema, SearchParams, SearchResponse } from './Documents';
 export interface MultiSearchRequestSchema extends SearchParams {
     collection?: string;
 }

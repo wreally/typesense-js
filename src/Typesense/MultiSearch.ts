@@ -1,7 +1,7 @@
-import ApiCall from './ApiCall'
-import Configuration from './Configuration'
+import type ApiCall from './ApiCall'
+import type Configuration from './Configuration'
 import RequestWithCache from './RequestWithCache'
-import { DocumentSchema, SearchParams, SearchResponse } from './Documents'
+import type { DocumentSchema, SearchParams, SearchResponse } from './Documents'
 
 const RESOURCEPATH = '/multi_search'
 
@@ -20,7 +20,7 @@ export interface MultiSearchResponse<T> {
 export default class MultiSearch<T extends DocumentSchema = {}> {
   private requestWithCache: RequestWithCache
 
-  constructor(
+  constructor (
     private apiCall: ApiCall,
     private configuration: Configuration,
     private useTextContentType: boolean = false
@@ -28,19 +28,19 @@ export default class MultiSearch<T extends DocumentSchema = {}> {
     this.requestWithCache = new RequestWithCache()
   }
 
-  async perform(
+  async perform (
     searchRequests: MultiSearchRequestsSchema,
     commonParams: Partial<MultiSearchRequestSchema> = {},
     {
       cacheSearchResultsForSeconds = this.configuration.cacheSearchResultsForSeconds
     }: { cacheSearchResultsForSeconds?: number } = {}
   ): Promise<MultiSearchResponse<T>> {
-    let additionalHeaders = {}
+    const additionalHeaders = {}
     if (this.useTextContentType) {
       additionalHeaders['content-type'] = 'text/plain'
     }
 
-    let additionalQueryParams = {}
+    const additionalQueryParams = {}
     if (this.configuration.useServerSideSearchCache === true) {
       additionalQueryParams['use_cache'] = true
     }

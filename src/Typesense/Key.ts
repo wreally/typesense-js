@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 import Keys from './Keys'
 
 export interface KeyCreateSchema {
@@ -18,17 +18,17 @@ export interface KeySchema extends KeyCreateSchema {
 }
 
 export default class Key {
-  constructor(private id: number, private apiCall: ApiCall) {}
+  constructor (private id: number, private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<KeySchema> {
+  async retrieve (): Promise<KeySchema> {
     return this.apiCall.get<KeySchema>(this.endpointPath())
   }
 
-  async delete(): Promise<KeyDeleteSchema> {
+  async delete (): Promise<KeyDeleteSchema> {
     return this.apiCall.delete<KeyDeleteSchema>(this.endpointPath())
   }
 
-  private endpointPath(): string {
+  private endpointPath (): string {
     return `${Keys.RESOURCEPATH}/${this.id}`
   }
 }

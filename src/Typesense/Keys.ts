@@ -1,7 +1,7 @@
 import { createHmac } from 'crypto'
-import ApiCall from './ApiCall'
-import { KeyCreateSchema, KeySchema } from './Key'
-import { SearchParams } from './Documents'
+import type ApiCall from './ApiCall'
+import type { KeyCreateSchema, KeySchema } from './Key'
+import type { SearchParams } from './Documents'
 
 const RESOURCEPATH = '/keys'
 
@@ -15,19 +15,19 @@ export interface GenerateScopedSearchKeyParams extends Partial<SearchParams> {
 }
 
 export default class Keys {
-  constructor(private apiCall: ApiCall) {
+  constructor (private apiCall: ApiCall) {
     this.apiCall = apiCall
   }
 
-  async create(params: KeyCreateSchema): Promise<KeySchema> {
+  async create (params: KeyCreateSchema): Promise<KeySchema> {
     return this.apiCall.post<KeySchema>(Keys.RESOURCEPATH, params)
   }
 
-  async retrieve(): Promise<KeysRetrieveSchema> {
+  async retrieve (): Promise<KeysRetrieveSchema> {
     return this.apiCall.get<KeysRetrieveSchema>(RESOURCEPATH)
   }
 
-  generateScopedSearchKey(searchKey: string, parameters: GenerateScopedSearchKeyParams): string {
+  generateScopedSearchKey (searchKey: string, parameters: GenerateScopedSearchKeyParams): string {
     // Note: only a key generated with the `documents:search` action will be
     // accepted by the server, when usined with the search endpoint.
     const paramsJSON = JSON.stringify(parameters)
@@ -38,7 +38,7 @@ export default class Keys {
     return Buffer.from(rawScopedKey).toString('base64')
   }
 
-  static get RESOURCEPATH() {
+  static get RESOURCEPATH () {
     return RESOURCEPATH
   }
 }

@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 
 const RESOURCEPATH = '/health'
 
@@ -7,9 +7,9 @@ export interface HealthResponse {
 }
 
 export default class Health {
-  constructor(private apiCall: ApiCall) {}
+  constructor (private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<HealthResponse> {
+  async retrieve (): Promise<HealthResponse> {
     return this.apiCall.get<HealthResponse>(RESOURCEPATH)
   }
 }

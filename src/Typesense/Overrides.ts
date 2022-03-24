@@ -1,6 +1,6 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 import Collections from './Collections'
-import { OverrideSchema } from './Override'
+import type { OverrideSchema } from './Override'
 
 const RESOURCEPATH = '/overrides'
 
@@ -23,23 +23,23 @@ export interface OverridesRetrieveSchema {
 }
 
 export default class Overrides {
-  constructor(private collectionName: string, private apiCall: ApiCall) {}
+  constructor (private collectionName: string, private apiCall: ApiCall) {}
 
-  async upsert(overrideId: string, params: OverrideCreateSchema): Promise<OverrideSchema> {
+  async upsert (overrideId: string, params: OverrideCreateSchema): Promise<OverrideSchema> {
     return this.apiCall.put<OverrideSchema>(this.endpointPath(overrideId), params)
   }
 
-  async retrieve(): Promise<OverridesRetrieveSchema> {
+  async retrieve (): Promise<OverridesRetrieveSchema> {
     return this.apiCall.get<OverridesRetrieveSchema>(this.endpointPath())
   }
 
-  private endpointPath(operation?: string): string {
+  private endpointPath (operation?: string): string {
     return `${Collections.RESOURCEPATH}/${this.collectionName}${Overrides.RESOURCEPATH}${
       operation === undefined ? '' : '/' + operation
     }`
   }
 
-  static get RESOURCEPATH(): string {
+  static get RESOURCEPATH (): string {
     return RESOURCEPATH
   }
 }

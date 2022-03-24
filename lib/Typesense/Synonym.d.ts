@@ -1,5 +1,5 @@
-import ApiCall from './ApiCall';
-import { SynonymCreateSchema } from './Synonyms';
+import type ApiCall from './ApiCall';
+import type { SynonymCreateSchema } from './Synonyms';
 export interface SynonymSchema extends SynonymCreateSchema {
     id: string;
 }

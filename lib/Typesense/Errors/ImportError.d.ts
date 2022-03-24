@@ -1,5 +1,5 @@
 import TypesenseError from './TypesenseError';
-import { ImportResponseFail } from '../Documents';
+import type { ImportResponseFail } from '../Documents';
 export default class ImportError extends TypesenseError {
     importResults: ImportResponseFail;
     constructor(message: any, importResults: any);

@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall'
+import type ApiCall from './ApiCall'
 
 const RESOURCEPATH = '/debug'
 
@@ -8,9 +8,9 @@ export interface DebugResponseSchema {
 }
 
 export default class Debug {
-  constructor(private apiCall: ApiCall) {}
+  constructor (private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<DebugResponseSchema> {
+  async retrieve (): Promise<DebugResponseSchema> {
     return this.apiCall.get<DebugResponseSchema>(RESOURCEPATH)
   }
 }

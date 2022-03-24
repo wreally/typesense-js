@@ -1,4 +1,5 @@
-import axios, { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
+import type { AxiosRequestConfig, AxiosResponse, Method } from 'axios'
+import axios from 'axios'
 import {
   HTTPError,
   ObjectAlreadyExists,
@@ -9,7 +10,8 @@ import {
   ServerError
 } from './Errors'
 import TypesenseError from './Errors/TypesenseError'
-import Configuration, { NodeConfiguration } from './Configuration'
+import type { NodeConfiguration } from './Configuration'
+import type Configuration from './Configuration'
 
 const APIKEYHEADERNAME = 'X-TYPESENSE-API-KEY'
 const HEALTHY = true
@@ -34,7 +36,7 @@ export default class ApiCall {
   private readonly logger: any
   private currentNodeIndex: number
 
-  constructor(private configuration: Configuration) {
+  constructor (private configuration: Configuration) {
     this.apiKey = this.configuration.apiKey
     this.nodes = JSON.parse(JSON.stringify(this.configuration.nodes)) // Make a copy, since we'll be adding additional metadata to the nodes
     this.nearestNode = JSON.parse(JSON.stringify(this.configuration.nearestNode))
@@ -51,7 +53,7 @@ export default class ApiCall {
     this.currentNodeIndex = -1
   }
 
-  async get<T extends any>(
+  async get<T> (
     endpoint: string,
     queryParameters: any = {},
     {
@@ -62,11 +64,11 @@ export default class ApiCall {
     return this.performRequest<T>('get', endpoint, { queryParameters, abortSignal, responseType })
   }
 
-  async delete<T extends any>(endpoint: string, queryParameters: any = {}): Promise<T> {
+  async delete<T> (endpoint: string, queryParameters: any = {}): Promise<T> {
     return this.performRequest<T>('delete', endpoint, { queryParameters })
   }
 
-  async post<T extends any>(
+  async post<T> (
     endpoint: string,
     bodyParameters: any = {},
     queryParameters: any = {},
@@ -75,15 +77,15 @@ export default class ApiCall {
     return this.performRequest<T>('post', endpoint, { queryParameters, bodyParameters, additionalHeaders })
   }
 
-  async put<T extends any>(endpoint: string, bodyParameters: any = {}, queryParameters: any = {}): Promise<T> {
+  async put<T> (endpoint: string, bodyParameters: any = {}, queryParameters: any = {}): Promise<T> {
     return this.performRequest<T>('put', endpoint, { queryParameters, bodyParameters })
   }
 
-  async patch<T extends any>(endpoint: string, bodyParameters: any = {}, queryParameters: any = {}): Promise<T> {
+  async patch<T> (endpoint: string, bodyParameters: any = {}, queryParameters: any = {}): Promise<T> {
     return this.performRequest<T>('patch', endpoint, { queryParameters, bodyParameters })
   }
 
-  async performRequest<T extends any>(
+  async performRequest<T> (
     requestType: Method,
     endpoint: string,
     {
@@ -106,7 +108,7 @@ export default class ApiCall {
     let lastException
     this.logger.debug(`Request #${requestNumber}: Performing ${requestType.toUpperCase()} request: ${endpoint}`)
     for (let numTries = 1; numTries <= this.numRetriesPerRequest + 1; numTries++) {
-      let node = this.getNextNode(requestNumber)
+      const node = this.getNextNode(requestNumber)
       this.logger.debug(
         `Request #${requestNumber}: Attempting ${requestType.toUpperCase()} request Try #${numTries} to Node ${
           node.index
@@ -120,7 +122,7 @@ export default class ApiCall {
       let abortListener
 
       try {
-        let requestOptions: AxiosRequestConfig = {
+        const requestOptions: AxiosRequestConfig = {
           method: requestType,
           url: this.uriFor(endpoint, node),
           headers: Object.assign({}, this.defaultHeaders(), additionalHeaders, this.additionalUserHeaders),
@@ -177,7 +179,7 @@ export default class ApiCall {
           requestOptions.cancelToken = source.token
         }
 
-        let response = await axios(requestOptions)
+        const response = await axios(requestOptions)
         if (response.status >= 1 && response.status <= 499) {
           // Treat any status code > 0 and < 500 to be an indication that node is healthy
           // We exclude 0 since some clients return 0 when request fails
@@ -225,7 +227,7 @@ export default class ApiCall {
   // Attempts to find the next healthy node, looping through the list of nodes once.
   //   But if no healthy nodes are found, it will just return the next node, even if it's unhealthy
   //     so we can try the request for good measure, in case that node has become healthy since
-  getNextNode(requestNumber: number = 0): Node {
+  getNextNode (requestNumber = 0): Node {
     // Check if nearestNode is set and is healthy, if so return it
     if (this.nearestNode != null) {
       this.logger.debug(
@@ -264,7 +266,7 @@ export default class ApiCall {
     return candidateNode
   }
 
-  nodeDueForHealthcheck(node, requestNumber: number = 0): boolean {
+  nodeDueForHealthcheck (node, requestNumber = 0): boolean {
     const isDueForHealthcheck = Date.now() - node.lastAccessTimestamp > this.healthcheckIntervalSeconds * 1000
     if (isDueForHealthcheck) {
       this.logger.debug(
@@ -274,7 +276,7 @@ export default class ApiCall {
     return isDueForHealthcheck
   }
 
-  initializeMetadataForNodes(): void {
+  initializeMetadataForNodes (): void {
     if (this.nearestNode != null) {
       this.nearestNode.index = 'nearestNode'
       this.setNodeHealthcheck(this.nearestNode, HEALTHY)
@@ -286,20 +288,20 @@ export default class ApiCall {
     })
   }
 
-  setNodeHealthcheck(node, isHealthy): void {
+  setNodeHealthcheck (node, isHealthy): void {
     node.isHealthy = isHealthy
     node.lastAccessTimestamp = Date.now()
   }
 
-  uriFor(endpoint: string, node): string {
+  uriFor (endpoint: string, node): string {
     if (node.url != null) {
       return `${node.url}${endpoint}`
     }
     return `${node.protocol}://${node.host}:${node.port}${node.path}${endpoint}`
   }
 
-  defaultHeaders(): any {
-    let defaultHeaders = {}
+  defaultHeaders (): any {
+    const defaultHeaders = {}
     if (!this.sendApiKeyAsQueryParam) {
       defaultHeaders[APIKEYHEADERNAME] = this.apiKey
     }
@@ -307,11 +309,11 @@ export default class ApiCall {
     return defaultHeaders
   }
 
-  async timer(seconds): Promise<void> {
+  async timer (seconds): Promise<void> {
     return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
   }
 
-  customErrorForResponse(response: AxiosResponse, messageFromServer: string): TypesenseError {
+  customErrorForResponse (response: AxiosResponse, messageFromServer: string): TypesenseError {
     let errorMessage = `Request failed with HTTP code ${response.status}`
     if (typeof messageFromServer === 'string' && messageFromServer.trim() !== '') {
       errorMessage += ` | Server said: ${messageFromServer}`

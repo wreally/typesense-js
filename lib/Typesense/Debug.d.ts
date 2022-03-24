@@ -1,4 +1,4 @@
-import ApiCall from './ApiCall';
+import type ApiCall from './ApiCall';
 export interface DebugResponseSchema {
     state: number;
     version: string;

@@ -5,7 +5,7 @@ export default class RequestWithCache {
   private responseCache: Map<string, any> = new Map<string, any>()
 
   // Todo: should probably be passed a callback instead, or an apiCall instance. Types are messy this way
-  async perform<T extends any>(
+  async perform<T> (
     requestContext: any,
     requestFunction: (...params: any) => unknown,
     requestFunctionArguments: any[],

@@ -1,4 +1,5 @@
-import Configuration, { ConfigurationOptions } from './Configuration'
+import type { ConfigurationOptions } from './Configuration'
+import Configuration from './Configuration'
 import ApiCall from './ApiCall'
 import Collections from './Collections'
 import Collection from './Collection'
@@ -27,7 +28,7 @@ export default class Client {
   private readonly _keys: Keys
   private readonly individualKeys: Record<number, Key>
 
-  constructor(options: ConfigurationOptions) {
+  constructor (options: ConfigurationOptions) {
     this.configuration = new Configuration(options)
     this.apiCall = new ApiCall(this.configuration)
     this.debug = new Debug(this.apiCall)
@@ -45,7 +46,7 @@ export default class Client {
 
   collections(): Collections
   collections<T extends Record<string, any> = {}>(collectionName: string): Collection<T>
-  collections(collectionName?: string): Collections | Collection {
+  collections (collectionName?: string): Collections | Collection {
     if (collectionName === undefined) {
       return this._collections
     } else {
@@ -58,7 +59,7 @@ export default class Client {
 
   aliases(): Aliases
   aliases(aliasName: string): Alias
-  aliases(aliasName?: string): Aliases | Alias {
+  aliases (aliasName?: string): Aliases | Alias {
     if (aliasName === undefined) {
       return this._aliases
     } else {
@@ -71,7 +72,7 @@ export default class Client {
 
   keys(): Keys
   keys(id: number): Key
-  keys(id?: number): Keys | Key {
+  keys (id?: number): Keys | Key {
     if (id === undefined) {
       return this._keys
     } else {

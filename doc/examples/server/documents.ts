@@ -3,8 +3,9 @@
  See clientInitalization.js for quick instructions on starting the Typesense server.
 */
 
-import Configuration, { NodeConfiguration, ConfigurationOptions } from '../../../src/Typesense/Configuration'
-import { CollectionCreateSchema } from '../../../src/Typesense/Collections'
+import type { NodeConfiguration, ConfigurationOptions } from '../../../src/Typesense/Configuration'
+import Configuration from '../../../src/Typesense/Configuration'
+import type { CollectionCreateSchema } from '../../../src/Typesense/Collections'
 import { Client } from '../../../src/Typesense'
 
 // Create a client
@@ -22,7 +23,7 @@ const typesense = new Client({
   logLevel: 'debug'
 } as ConfigurationOptions)
 
-let schema = {
+const schema = {
   name: 'companies',
   num_documents: 0,
   fields: [
@@ -45,7 +46,7 @@ let schema = {
   default_sorting_field: 'num_employees'
 }
 
-let documents = [
+const documents = [
   {
     id: '124',
     company_name: 'Stark Industries',
@@ -60,7 +61,7 @@ let documents = [
   }
 ]
 
-async function runExample() {
+async function runExample () {
   try {
     // Delete if the collection already exists from a previous example run
     await typesense.collections('companies').delete()
@@ -114,7 +115,7 @@ async function runExample() {
   }
 }
 
-async function timer(seconds) {
+async function timer (seconds) {
   return new Promise((resolve) => setTimeout(resolve, seconds * 1000))
 }
 

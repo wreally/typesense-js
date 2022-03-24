@@ -1,18 +1,19 @@
-import Aliases, { CollectionAliasSchema } from './Aliases'
-import ApiCall from './ApiCall'
+import type { CollectionAliasSchema } from './Aliases'
+import Aliases from './Aliases'
+import type ApiCall from './ApiCall'
 
 export default class Alias {
-  constructor(private name: string, private apiCall: ApiCall) {}
+  constructor (private name: string, private apiCall: ApiCall) {}
 
-  async retrieve(): Promise<CollectionAliasSchema> {
+  async retrieve (): Promise<CollectionAliasSchema> {
     return this.apiCall.get<CollectionAliasSchema>(this.endpointPath())
   }
 
-  async delete(): Promise<CollectionAliasSchema> {
+  async delete (): Promise<CollectionAliasSchema> {
     return this.apiCall.delete<CollectionAliasSchema>(this.endpointPath())
   }
 
-  private endpointPath(): string {
+  private endpointPath (): string {
     return `${Aliases.RESOURCEPATH}/${this.name}`
   }
 }
