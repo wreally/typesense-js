@@ -6,6 +6,7 @@ export default class Analytics {
     private readonly _analyticsRules;
     private readonly individualAnalyticsRules;
     constructor(apiCall: ApiCall);
-    rules(id?: string): AnalyticsRules | AnalyticsRule;
+    rules(): AnalyticsRules;
+    rules(id: string): AnalyticsRule;
     static get RESOURCEPATH(): string;
 }
