@@ -31,7 +31,7 @@ export default class AnalyticsRules {
 
   private endpointPath(operation?: string): string {
     return `${AnalyticsRules.RESOURCEPATH}${
-      operation === undefined ? "" : "/" + operation
+      operation === undefined ? "" : "/" + encodeURIComponent(operation)
     }`;
   }
 

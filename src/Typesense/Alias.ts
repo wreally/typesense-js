@@ -13,6 +13,6 @@ export default class Alias {
   }
 
   private endpointPath(): string {
-    return `${Aliases.RESOURCEPATH}/${this.name}`;
+    return `${Aliases.RESOURCEPATH}/${encodeURIComponent(this.name)}`;
   }
 }

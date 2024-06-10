@@ -30,6 +30,6 @@ export default class Key {
   }
 
   private endpointPath(): string {
-    return `${Keys.RESOURCEPATH}/${this.id}`;
+    return `${Keys.RESOURCEPATH}/${encodeURIComponent(this.id)}`;
   }
 }

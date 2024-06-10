@@ -64,7 +64,7 @@ export default class Overrides {
   private endpointPath(operation?: string): string {
     return `${Collections.RESOURCEPATH}/${this.collectionName}${
       Overrides.RESOURCEPATH
-    }${operation === undefined ? "" : "/" + operation}`;
+    }${operation === undefined ? "" : "/" + encodeURIComponent(operation)}`;
   }
 
   static get RESOURCEPATH(): string {

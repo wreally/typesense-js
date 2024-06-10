@@ -31,7 +31,7 @@ export default class Stopwords {
 
   private endpointPath(operation?: string): string {
     return `${Stopwords.RESOURCEPATH}${
-      operation === undefined ? "" : "/" + operation
+      operation === undefined ? "" : "/" + encodeURIComponent(operation)
     }`;
   }
 

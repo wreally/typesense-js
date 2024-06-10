@@ -21,6 +21,6 @@ export default class Preset {
   }
 
   private endpointPath(): string {
-    return `${Presets.RESOURCEPATH}/${this.presetId}`;
+    return `${Presets.RESOURCEPATH}/${encodeURIComponent(this.presetId)}`;
   }
 }

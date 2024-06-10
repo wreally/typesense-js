@@ -19,7 +19,7 @@ export default class AnalyticsEvents {
 
   private endpointPath(operation?: string): string {
     return `${AnalyticsEvents.RESOURCEPATH}${
-      operation === undefined ? "" : "/" + operation
+      operation === undefined ? "" : "/" + encodeURIComponent(operation)
     }`;
   }
 

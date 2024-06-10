@@ -158,6 +158,6 @@ export default class Collection<T extends DocumentSchema = object> {
   }
 
   private endpointPath(): string {
-    return `${Collections.RESOURCEPATH}/${this.name}`;
+    return `${Collections.RESOURCEPATH}/${encodeURIComponent(this.name)}`;
   }
 }

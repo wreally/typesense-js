@@ -33,9 +33,9 @@ export default class Synonyms {
   }
 
   private endpointPath(operation?: string) {
-    return `${Collections.RESOURCEPATH}/${this.collectionName}${
+    return `${Collections.RESOURCEPATH}/${encodeURIComponent(this.collectionName)}${
       Synonyms.RESOURCEPATH
-    }${operation === undefined ? "" : "/" + operation}`;
+    }${operation === undefined ? "" : "/" + encodeURIComponent(operation)}`;
   }
 
   static get RESOURCEPATH(): string {

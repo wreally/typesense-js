@@ -26,6 +26,6 @@ export default class Synonym {
   }
 
   private endpointPath(): string {
-    return `${Collections.RESOURCEPATH}/${this.collectionName}${Synonyms.RESOURCEPATH}/${this.synonymId}`;
+    return `${Collections.RESOURCEPATH}/${encodeURIComponent(this.collectionName)}${Synonyms.RESOURCEPATH}/${encodeURIComponent(this.synonymId)}`;
   }
 }

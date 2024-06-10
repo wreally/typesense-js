@@ -26,6 +26,6 @@ export default class Stopword {
   }
 
   private endpointPath(): string {
-    return `${Stopwords.RESOURCEPATH}/${this.stopwordId}`;
+    return `${Stopwords.RESOURCEPATH}/${encodeURIComponent(this.stopwordId)}`;
   }
 }

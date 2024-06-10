@@ -28,7 +28,7 @@ export default class ConversationModels {
 
   private endpointPath(operation?: string): string {
     return `${ConversationModels.RESOURCEPATH}${
-      operation === undefined ? "" : "/" + operation
+      operation === undefined ? "" : "/" + encodeURIComponent(operation)
     }`;
   }
 

@@ -32,7 +32,7 @@ export default class Aliases {
   }
 
   private endpointPath(aliasName): string {
-    return `${Aliases.RESOURCEPATH}/${aliasName}`;
+    return `${Aliases.RESOURCEPATH}/${encodeURIComponent(aliasName)}`;
   }
 
   static get RESOURCEPATH(): string {

@@ -29,7 +29,7 @@ export default class Presets {
 
   private endpointPath(operation?: string): string {
     return `${Presets.RESOURCEPATH}${
-      operation === undefined ? "" : "/" + operation
+      operation === undefined ? "" : "/" + encodeURIComponent(operation)
     }`;
   }
 

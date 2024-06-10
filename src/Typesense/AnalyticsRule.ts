@@ -44,6 +44,6 @@ export default class AnalyticsRule {
   }
 
   private endpointPath(): string {
-    return `${AnalyticsRules.RESOURCEPATH}/${this.name}`;
+    return `${AnalyticsRules.RESOURCEPATH}/${encodeURIComponent(this.name)}`;
   }
 }

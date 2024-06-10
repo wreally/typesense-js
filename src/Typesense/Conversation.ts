@@ -40,6 +40,6 @@ export default class Conversation {
   }
 
   private endpointPath(): string {
-    return `${Conversations.RESOURCEPATH}/${this.id}`;
+    return `${Conversations.RESOURCEPATH}/${encodeURIComponent(this.id)}`;
   }
 }

@@ -26,6 +26,6 @@ export default class Override {
   }
 
   private endpointPath(): string {
-    return `${Collections.RESOURCEPATH}/${this.collectionName}${Overrides.RESOURCEPATH}/${this.overrideId}`;
+    return `${Collections.RESOURCEPATH}/${encodeURIComponent(this.collectionName)}${Overrides.RESOURCEPATH}/${encodeURIComponent(this.overrideId)}`;
   }
 }

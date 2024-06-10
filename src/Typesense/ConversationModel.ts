@@ -44,6 +44,6 @@ export default class ConversationModel {
   }
 
   private endpointPath(): string {
-    return `${ConversationModels.RESOURCEPATH}/${this.id}`;
+    return `${ConversationModels.RESOURCEPATH}/${encodeURIComponent(this.id)}`;
   }
 }
