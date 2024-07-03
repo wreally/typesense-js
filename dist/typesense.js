@@ -2058,7 +2058,8 @@ var Document = /*#__PURE__*/function () {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ Documents)
+/* harmony export */   "default": () => (/* binding */ Documents),
+/* harmony export */   searchParamsArrayKeys: () => (/* binding */ searchParamsArrayKeys)
 /* harmony export */ });
 /* harmony import */ var _babel_runtime_helpers_asyncToGenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/asyncToGenerator */ "./node_modules/@babel/runtime/helpers/esm/asyncToGenerator.js");
 /* harmony import */ var _babel_runtime_helpers_classCallCheck__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/classCallCheck */ "./node_modules/@babel/runtime/helpers/esm/classCallCheck.js");
@@ -2083,6 +2084,39 @@ function _isNativeReflectConstruct() { try { var t = !Boolean.prototype.valueOf.
 
 
 // Todo: use generic to extract filter_by values
+
+/**
+ * Filters the properties of the `SearchParams` type, selecting only those whose type is an array.
+ * This utility type creates a new type by iterating over each property (`K`) of `SearchParams`.
+ * If the property type is an array (`unknown[]`), it is included in the resulting type with its original type.
+ * Otherwise, the property is excluded.
+ *
+ **/
+
+/**
+ * Defines a constant `searchParamsArrayKeys` that explicitly satisfies the structure required by `ArrayableSearchParams`.
+ * Each key in `searchParamsArrayKeys` corresponds to a property name in `ArrayableSearchParams` and is set to `true`.
+ * This object is used to indicate which parameters are expected to be arrays in the context where `ArrayableSearchParams` is applied.
+ * The `satisfies` keyword ensures that `searchParamsArrayKeys` covers all properties defined by `ArrayableSearchParams`,
+ * enforcing a compile-time check that each key in `searchParamsArrayKeys` matches a property in `ArrayableSearchParams`.
+ *
+ **/
+var searchParamsArrayKeys = {
+  exclude_fields: true,
+  facet_by: true,
+  group_by: true,
+  hidden_hits: true,
+  highlight_fields: true,
+  highlight_full_fields: true,
+  pinned_hits: true,
+  query_by: true,
+  sort_by: true,
+  include_fields: true,
+  infix: true,
+  num_typos: true,
+  prefix: true,
+  query_by_weights: true
+};
 
 // Todo: we could infer whether this is a grouped response by adding the search params as a generic
 var Documents = /*#__PURE__*/function (_ref) {
@@ -3800,6 +3834,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4__);
 /* harmony import */ var _RequestWithCache__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./RequestWithCache */ "./src/Typesense/RequestWithCache.ts");
 /* harmony import */ var _Collections__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./Collections */ "./src/Typesense/Collections.ts");
+/* harmony import */ var _Utils__WEBPACK_IMPORTED_MODULE_7__ = __webpack_require__(/*! ./Utils */ "./src/Typesense/Utils.ts");
+
 
 
 
@@ -3831,7 +3867,7 @@ var SearchOnlyDocuments = /*#__PURE__*/function () {
           _ref$abortSignal,
           abortSignal,
           additionalQueryParams,
-          key,
+          joinedSearchParams,
           queryParams,
           _args = arguments;
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_4___default().wrap(function _callee$(_context) {
@@ -3842,12 +3878,8 @@ var SearchOnlyDocuments = /*#__PURE__*/function () {
               if (this.configuration.useServerSideSearchCache === true) {
                 additionalQueryParams["use_cache"] = true;
               }
-              for (key in searchParameters) {
-                if (Array.isArray(searchParameters[key])) {
-                  additionalQueryParams[key] = searchParameters[key].join(",");
-                }
-              }
-              queryParams = Object.assign({}, searchParameters, additionalQueryParams);
+              joinedSearchParams = (0,_Utils__WEBPACK_IMPORTED_MODULE_7__.combineAndFlattenArraySearchParams)(searchParameters);
+              queryParams = Object.assign({}, joinedSearchParams, additionalQueryParams);
               return _context.abrupt("return", this.requestWithCache.perform(this.apiCall, this.apiCall.get, [this.endpointPath("search"), queryParams, {
                 abortSignal: abortSignal
               }], {
@@ -4253,6 +4285,91 @@ var Synonyms = /*#__PURE__*/function () {
   return Synonyms;
 }();
 
+
+/***/ }),
+
+/***/ "./src/Typesense/Utils.ts":
+/*!********************************!*\
+  !*** ./src/Typesense/Utils.ts ***!
+  \********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   combineAndFlattenArraySearchParams: () => (/* binding */ combineAndFlattenArraySearchParams)
+/* harmony export */ });
+/* harmony import */ var _babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/helpers/defineProperty */ "./node_modules/@babel/runtime/helpers/esm/defineProperty.js");
+/* harmony import */ var _babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! @babel/runtime/helpers/slicedToArray */ "./node_modules/@babel/runtime/helpers/esm/slicedToArray.js");
+/* harmony import */ var _Documents__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Documents */ "./src/Typesense/Documents.ts");
+
+
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { (0,_babel_runtime_helpers_defineProperty__WEBPACK_IMPORTED_MODULE_0__["default"])(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+
+
+/**
+ * Converts each array property of an object type to a string property, while keeping non-array properties unchanged.
+ *
+ * @typeparam T - The object type whose properties are to be converted.
+ *
+ * @example
+ * // Given an object type with some properties as arrays:
+ * type Example = {
+ *   ids: number[];
+ *   name: string;
+ * }
+ *
+ * // The ConvertArrayToString type will produce:
+ * type ConvertedExample = ConvertArrayToString<Example>;
+ * // Resulting in:
+ * // {
+ * //   ids: string;
+ * //   name: string;
+ * // }
+ */
+
+/**
+ * Combines and flattens array search parameters into a string representation.
+ * This function takes an object of search parameters, where some values may be arrays, and returns a new object.
+ * In the returned object, array values are converted to comma-separated strings, while non-array values are kept as-is.
+ * This is useful for preparing search parameters for API requests where array parameters need to be serialized.
+ *
+ * @param params - The search parameters object, potentially containing array values for certain keys.
+ *
+ * @example
+ * // Given search parameters with array and non-array values const searchParams = {
+ *   tags: ["tag1", "tag2"],
+ *   category: "news",
+ *   ids: [1, 2, 3]
+ * };
+ *
+ * // Using combineAndFlattenArraySearchParams:
+ * const flattenedParams = combineAndFlattenArraySearchParams(searchParams);
+ *
+ * // The returned object will be:
+ * // {
+ * //   tags: "tag1,tag2",
+ * //   category: "news",
+ * //   ids: "1,2,3"
+ * // }
+ */
+function combineAndFlattenArraySearchParams(params) {
+  var arrayblePart = Object.entries(params).filter(function (_ref) {
+    var _ref2 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(_ref, 1),
+      key = _ref2[0];
+    return _Documents__WEBPACK_IMPORTED_MODULE_2__.searchParamsArrayKeys[key];
+  }).map(function (_ref3) {
+    var _ref4 = (0,_babel_runtime_helpers_slicedToArray__WEBPACK_IMPORTED_MODULE_1__["default"])(_ref3, 2),
+      key = _ref4[0],
+      value = _ref4[1];
+    if (Array.isArray(value)) {
+      return [key, value.join(",")];
+    }
+    return [key, value];
+  });
+  return _objectSpread(_objectSpread({}, params), Object.fromEntries(arrayblePart));
+}
 
 /***/ }),
 

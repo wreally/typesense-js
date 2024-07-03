@@ -26,6 +26,40 @@ export interface SearchParamsWithPreset extends Partial<SearchParams> {
     preset: string;
 }
 type OperationMode = "off" | "always" | "fallback";
+/**
+ * Filters the properties of the `SearchParams` type, selecting only those whose type is an array.
+ * This utility type creates a new type by iterating over each property (`K`) of `SearchParams`.
+ * If the property type is an array (`unknown[]`), it is included in the resulting type with its original type.
+ * Otherwise, the property is excluded.
+ *
+ **/
+export type ArrayableSearchParams = {
+    [K in keyof SearchParams as SearchParams[K] extends infer R ? R extends unknown[] ? K : never : never]: SearchParams[K];
+};
+/**
+ * Defines a constant `searchParamsArrayKeys` that explicitly satisfies the structure required by `ArrayableSearchParams`.
+ * Each key in `searchParamsArrayKeys` corresponds to a property name in `ArrayableSearchParams` and is set to `true`.
+ * This object is used to indicate which parameters are expected to be arrays in the context where `ArrayableSearchParams` is applied.
+ * The `satisfies` keyword ensures that `searchParamsArrayKeys` covers all properties defined by `ArrayableSearchParams`,
+ * enforcing a compile-time check that each key in `searchParamsArrayKeys` matches a property in `ArrayableSearchParams`.
+ *
+ **/
+export declare const searchParamsArrayKeys: {
+    exclude_fields: true;
+    facet_by: true;
+    group_by: true;
+    hidden_hits: true;
+    highlight_fields: true;
+    highlight_full_fields: true;
+    pinned_hits: true;
+    query_by: true;
+    sort_by: true;
+    include_fields: true;
+    infix: true;
+    num_typos: true;
+    prefix: true;
+    query_by_weights: true;
+};
 export interface SearchParams {
     q?: string;
     query_by?: string | string[];
@@ -102,7 +136,6 @@ export interface SearchResponseHit<T extends DocumentSchema> {
             field: keyof T;
             snippet?: string;
             value?: string;
-            values?: string[];
             snippets?: string[];
             indices?: number[];
             matched_tokens: string[][] | string[];
