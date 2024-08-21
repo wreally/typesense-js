@@ -1,1 +1,0 @@
-{"version":3,"file":"ImportError.js","sourceRoot":"","sources":["../../../src/Typesense/Errors/ImportError.ts"],"names":[],"mappings":";;;AAAA,4EAA8C;AAG9C;IAAyC,uCAAc;IAErD,qBAAY,OAAe,EAAE,aAA+B;QAC1D,YAAA,MAAK,YAAC,OAAO,CAAC,SAAC;QACf,KAAI,CAAC,aAAa,GAAG,aAAa,CAAC;;IACrC,CAAC;IACH,kBAAC;AAAD,CAAC,AAND,CAAyC,wBAAc,GAMtD"}
