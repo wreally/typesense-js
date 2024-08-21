@@ -2,7 +2,7 @@
 
 Javascript client library for accessing the [Typesense HTTP API](https://github.com/typesense/typesense).
 
-This library can be used both on the server-side and on the client-side. The library's [source](/src) is in ES6 and during build time, we transpile it to ES5 and generate two artifacts - [one](/lib) that can be used on the server-side and [another](/dist) that uses [Browserify](http://browserify.org/) and can be used on the client side.
+This library can be used both on the server-side and on the client-side. The library's [source](/src) is in ES6 and during build time, generate two artifacts - [one](/lib) that is transpiled to ES5 that can be used on the server-side and [another](/dist) that can be used on the client side.
 
 ## Installation
 
