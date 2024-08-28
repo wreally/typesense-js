@@ -125,9 +125,7 @@
   "repository": "typesense/typesense-js",
   "license": "Apache-2.0",
   "dependencies": {
-    "axios": "^1.7.2",
-    "loglevel": "^1.8.1",
-    "tslib": "^2.6.2"
+    "axios": "^1.7.5"
   },
   "peerDependencies": {
     "@babel/runtime": "^7.23.2"
