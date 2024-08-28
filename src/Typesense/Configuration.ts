@@ -1,4 +1,5 @@
-import logger from "loglevel";
+import { logger } from "./Logger";
+import type { LogLevel } from "./Logger";
 import { MissingConfigurationError } from "./Errors";
 import type { Agent as HTTPAgent } from "http";
 import type { Agent as HTTPSAgent } from "https";
@@ -58,9 +59,8 @@ export interface ConfigurationOptions {
   useServerSideSearchCache?: boolean;
   cacheSearchResultsForSeconds?: number;
   additionalHeaders?: Record<string, string>;
-
-  logLevel?: logger.LogLevelDesc;
-  logger?: logger.Logger;
+  logger?: typeof logger;
+  logLevel?: LogLevel;
 
   /**
    * Set a custom HTTP Agent
@@ -113,8 +113,8 @@ export default class Configuration {
   readonly sendApiKeyAsQueryParam?: boolean;
   readonly cacheSearchResultsForSeconds: number;
   readonly useServerSideSearchCache: boolean;
-  readonly logger: logger.Logger;
-  readonly logLevel: logger.LogLevelDesc;
+  readonly logger: typeof logger;
+  readonly logLevel: LogLevel;
   readonly additionalHeaders?: Record<string, string>;
   readonly httpAgent?: HTTPAgent;
   readonly httpsAgent?: HTTPSAgent;
@@ -157,7 +157,7 @@ export default class Configuration {
 
     this.logger = options.logger || logger;
     this.logLevel = options.logLevel || "warn";
-    this.logger.setLevel(this.logLevel);
+    this.logger.setLogLevel(this.logLevel);
 
     this.additionalHeaders = options.additionalHeaders;
 
