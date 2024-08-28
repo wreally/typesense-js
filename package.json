@@ -77,6 +77,7 @@
     "browserslist-to-esbuild": "^2.1.1",
     "chai": "~4.3.10",
     "chai-as-promised": "^7.1.1",
+    "chai-spies": "^1.1.0",
     "common-shakeify": "^1.1.2",
     "core-js": "^3.33.2",
     "del": "^7.1.0",
