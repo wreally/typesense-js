@@ -42,13 +42,40 @@ describe("Aliases", function () {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
             "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
-          }
+          },
         )
         .reply(201, "{}", {
           "content-type": "application/json; charset=utf-8",
         });
 
       let returnData = aliases.upsert("books", {
+        collection_name: "books_january",
+      });
+
+      expect(returnData).to.eventually.deep.equal({}).notify(done);
+    });
+
+    it("upserts an alias with URL encoded name", function (done) {
+      mockAxios
+        .onPut(
+          apiCall.uriFor(
+            "/aliases/abc123%20%2F%3A%3D-_~%26%3F%23",
+            typesense.configuration.nodes[0],
+          ),
+          {
+            collection_name: "books_january",
+          },
+          {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
+          },
+        )
+        .reply(201, "{}", {
+          "content-type": "application/json; charset=utf-8",
+        });
+
+      let returnData = aliases.upsert("abc123 /:=-_~&?#", {
         collection_name: "books_january",
       });
 
@@ -66,7 +93,7 @@ describe("Aliases", function () {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
             "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
-          }
+          },
         )
         .reply(200, "[]", {
           "content-type": "application/json; charset=utf-8",

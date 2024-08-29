@@ -36,14 +36,14 @@ describe("Alias", function () {
         .onGet(
           apiCall.uriFor(
             "/aliases/companies",
-            typesense.configuration.nodes[0]
+            typesense.configuration.nodes[0],
           ),
           null,
           {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
             "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
-          }
+          },
         )
         .reply(200, "{}", {
           "content-type": "application/json; charset=utf-8",
@@ -55,6 +55,28 @@ describe("Alias", function () {
 
       expect(returnData).to.eventually.deep.equal({}).notify(done);
     });
+
+    it("retrieves the alias with URL encoded name", function (done) {
+      mockAxios
+        .onGet(
+          apiCall.uriFor(
+            "/aliases/abc123%20%2F%3A%3D-_~%26%3F%23",
+            typesense.configuration.nodes[0],
+          ),
+          null,
+          {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
+          },
+        )
+        .reply(200, "{}", {
+          "content-type": "application/json; charset=utf-8",
+        });
+      let returnData = typesense.aliases("abc123 /:=-_~&?#").retrieve();
+
+      expect(returnData).to.eventually.deep.equal({}).notify(done);
+    });
   });
 
   describe(".delete", function () {
@@ -63,14 +85,14 @@ describe("Alias", function () {
         .onDelete(
           apiCall.uriFor(
             "/aliases/companies",
-            typesense.configuration.nodes[0]
+            typesense.configuration.nodes[0],
           ),
           null,
           {
             Accept: "application/json, text/plain, */*",
             "Content-Type": "application/json",
             "X-TYPESENSE-API-KEY": typesense.configuration.apiKey,
-          }
+          },
         )
         .reply(200, "{}", {
           "content-type": "application/json; charset=utf-8",
