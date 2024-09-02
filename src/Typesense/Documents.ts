@@ -83,6 +83,7 @@ export interface SearchParams {
   limit_hits?: number; // default: no limit
   pre_segmented_query?: boolean;
   enable_overrides?: boolean;
+  override_tags?: string | string[];
   prioritize_exact_match?: boolean; // default: true
   prioritize_token_position?: boolean;
   prioritize_num_matching_fields?: boolean;
