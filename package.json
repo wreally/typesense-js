@@ -107,7 +107,6 @@
   "scripts": {
     "format": "prettier --write \"(src|test|doc)/**/*.(ts|json|js)\"",
     "pretest": "eslint .",
-    "prepare": "npm run build",
     "test": "nyc --reporter=html --reporter=text ts-mocha --require @babel/register --recursive",
     "build": "tsup",
     "build:tsc": "tsc",
