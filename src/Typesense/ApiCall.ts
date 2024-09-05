@@ -1,5 +1,5 @@
 import axios, { AxiosRequestConfig, AxiosResponse, Method } from "axios";
-import { Logger } from "loglevel";
+import { logger } from "./Logger";
 import {
   HTTPError,
   ObjectAlreadyExists,
@@ -39,7 +39,7 @@ export default class ApiCall {
   private readonly numRetriesPerRequest: number;
   private readonly additionalUserHeaders?: Record<string, string>;
 
-  private readonly logger: Logger;
+  private readonly logger: typeof logger;
   private currentNodeIndex: number;
 
   constructor(private configuration: Configuration) {

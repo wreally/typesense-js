@@ -20,12 +20,25 @@
       "url": "https://github.com/dcantu476"
     }
   ],
-  "main": "lib/Typesense.js",
+  "main": "lib/Typesense.min.js",
   "types": "lib/Typesense.d.ts",
+  "module": "lib/Typesense.min.mjs",
   "browser": {
     "crypto": false,
     "http": false,
     "https": false
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/Typesense.d.ts",
+      "import": "./lib/Typesense.min.mjs",
+      "require": "./lib/Typesense.min.js"
+    },
+    "./dist": {
+      "types": "./dist/Typesense.d.ts",
+      "import": "./dist/Typesense.min.mjs",
+      "require": "./dist/Typesense.min.js"
+    }
   },
   "files": [
     "lib/",
@@ -60,11 +73,15 @@
     "babel-plugin-istanbul": "^6.1.1",
     "babelify": "^10.0.0",
     "browserify": "^17.0.0",
+    "browserslist": "^4.23.3",
+    "browserslist-to-esbuild": "^2.1.1",
     "chai": "~4.3.10",
     "chai-as-promised": "^7.1.1",
+    "chai-spies": "^1.1.0",
     "common-shakeify": "^1.1.2",
     "core-js": "^3.33.2",
     "del": "^7.1.0",
+    "esbuild-plugins-node-modules-polyfill": "^1.6.5",
     "eslint": "^8.52.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.29.0",
@@ -80,6 +97,7 @@
     "ts-loader": "^9.5.0",
     "ts-mocha": "^10.0.0",
     "tsify": "^5.0.4",
+    "tsup": "^8.2.4",
     "typescript": "^5.2.2",
     "vinyl-buffer": "^1.0.1",
     "vinyl-source-stream": "^2.0.0",
@@ -90,7 +108,7 @@
     "format": "prettier --write \"(src|test|doc)/**/*.(ts|json|js)\"",
     "pretest": "eslint .",
     "test": "nyc --reporter=html --reporter=text ts-mocha --require @babel/register --recursive",
-    "build": "npm run build:tsc && npm run build:web:dev && npm run build:web:prod",
+    "build": "tsup",
     "build:tsc": "tsc",
     "build:web:dev": "webpack --config webpack.config.js --mode development",
     "build:web:prod": "webpack --config webpack.config.js --mode production",
@@ -106,9 +124,7 @@
   "repository": "typesense/typesense-js",
   "license": "Apache-2.0",
   "dependencies": {
-    "axios": "^1.7.2",
-    "loglevel": "^1.8.1",
-    "tslib": "^2.6.2"
+    "axios": "^1.7.5"
   },
   "peerDependencies": {
     "@babel/runtime": "^7.23.2"

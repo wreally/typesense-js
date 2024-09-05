@@ -1,1 +1,0 @@
-{"version":3,"file":"TypesenseError.js","sourceRoot":"","sources":["../../../src/Typesense/Errors/TypesenseError.ts"],"names":[],"mappings":";;;AAAA;IAA4C,0CAAK;IAG/C,sDAAsD;IACtD,wBAAY,OAAgB;;QAC1B,YAAA,MAAK,YAAC,OAAO,CAAC,SAAC;QACf,KAAI,CAAC,IAAI,GAAG,WAAW,IAAI,CAAC;QAC5B,MAAM,CAAC,cAAc,CAAC,KAAI,EAAE,WAAW,SAAS,CAAC,CAAC;;IACpD,CAAC;IACH,qBAAC;AAAD,CAAC,AATD,CAA4C,KAAK,GAShD"}
